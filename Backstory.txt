@@ -1,0 +1,36 @@
+Your father was a senior member of the highly exclusive and extremely presigious Hunter's Club. His collection of rare pelts and trophies was the envie of everyone, especially you uncle <Fred>. One day, you father went hunting with <Fred>, and vanished. <Fred> said that he was finally killed by one of the beasts he pursued, and everyone believed him. However, you think your uncle actually killed your father so that he could hold the title of Greatest Hunter. To get revenge, you decide to pursue the title yourself...
+
+Gameplay notes:
+
+Controls:
+Arrow keys move;2nd,mode,del=A,B,C keys,
+
+Note: Using the number pad, it would be possible to swipe around like a circle pad on a 3DS.
+We would just need to check which keys are pressed, including the diagonals. This would make the movement a little more complicated, but I think it would make the game a little more novel.
+
+Motion:
+
+We have two options:
+1) Take after the original Zelda games and make a broad tilemap with smaller individual ones. Load the individual ones dynamically when the player enters a room. When the player moves around, move the player sprite:
+
+Advantages: Speed. No need to render the entire tilemap, just search and select.
+            Extendability. Plugins are really easy, as is editing a map. You just make a "room", and add it to the main tilemap. The rooms themselves could be self contained, (requiring only one function call to draw a room) which would allow them to be added one by one instead of in large chunks. (easier testing?)
+            Enemies are really easy. They chase and attack and get attacked when in the same room as the player.
+Cons:
+    Gameplay is more difficult. It's also a little harder to check collisions, especially if the player moves around a lot.
+    It also means that we need two tilemaps instead of just one.
+    Sizes: Two tilemaps could be tricky to deal with, especially if the main one is really big. Of course, it isn't as big of a problem as with the second option.
+    
+2) Take a Pokemon style approach: Hold the entire tilemap in RAM, or rather as much as you can, breaking it up into smaller tilemaps reachable only by going through a door, for example, to avoid memory limitations. When the player moves, adjust the tilemap offset so that it moves in the opposite direction as the player. Move any enemies and decorations as well.
+    Advantages:
+        It's more realistic. In addition, its probably easier and more intuitive for the player. 
+        It's easier to do collisions: No need to check against a moving target, you can instead check hitboxes with a fixed point in the center of the screen.
+    Disadvantages:
+        It takes a lot of RAM to hold the tilemap, lag is definitely an issue if there are a lot of enemies, since you can't know right away which ones are on the player's screen.
+        It's also a lot harder to design the tilemap, since you can't do it in pieces.
+        It gets weird when the player reaches the edge: you have to put obstacles and some decorations as a buffer so the player doesn't see random garbage off the edge of the map.
+
+
+I personally think option 1 is better...
+
+What do you think?
