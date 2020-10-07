@@ -8,7 +8,7 @@
 NAME        ?= SURVIVCE
 COMPRESSED  ?= NO
 ICON        ?= icon.png
-DESCRIPTION ?= "SurvivalCE - CC24 Entry by TimmyTurner62 and Michael0x18"
+DESCRIPTION ?= "SurvivalCE - CC24 Entry by Michael0x18 and TimmyTurner62"
 
 # ----------------------------
 
