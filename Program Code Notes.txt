@@ -1,0 +1,15 @@
+We might delete this file later, but I think we could use these lines of code in main.c:
+
+#include <graphx.h>
+#include <keypadc.h>
+
+...and...
+
+gfx_Begin();
+
+   and we could possibly use
+gfx_PrintStringXY("Text here... ", 1, 1);
+    ...for basic text output to the screen.
+    
+    
+We can both edit this at anytime to better communicate our code ideas here and our story and other stuff in the backstory.txt...
