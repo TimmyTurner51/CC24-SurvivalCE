@@ -95,39 +95,52 @@ void run_intro(void){
     gfx_SetTextFGColor(253);
     //Wait for a moment
     delay(1000);
-    const int8_t numMessages=15;
-    const char messages[numMessages][150]={
-     "Your father was a senior member of the",
-     "highly exclusive and extremely",
-     "prestigious Hunter's Club.",
-     "His collection of rare pelts and trophies",
-     "was the envy of everyone, especially your",
-     "uncle Fred.",
-     "One day, your father went hunting with Fred",
-     "and vanished. Fred said that he was finally",
-     "killed by one of the beasts he pursued,",
-     "and everyone believed him.",
-     "However, you think your uncle actually",
-     "killed your father so that he could hold",
-     "the title of Greatest Hunter.",
-     "To get revenge, you decide to pursue the",
-     "title yourself..."
-    };
-    for(int8_t i =0; i<numMessages;i++){
-        gfx_PrintStringXY(messages[i],0,10*i);
-        //gfx_PrintInt(i,2);
-        for(int8_t j = 0; j < 10; j++){
-           if(os_GetCSC())return;
-           delay(100);
-        }
 
-    }
-    gfx_PrintStringXY("And so the saga begins...",20,180);
-    for(int8_t j = 0; j < 10; j++){
-           if(os_GetCSC())return;
-           delay(100);
-    }
+    
+    //I have removed your code momentarialy to test my version. I will post the original code that was here before this in the code notes txt file...
+    
+    //I always backup the files. Your code is backed up btw. :P
+    
+    //Make a Pokemon-style text box... still messy-looking. Let's hope it works...
+    gfx_SetColor(227);
+    gfx_FillRectangle(0, 120, 280, 20);
+    gfx_PrintStringXY("Your father was a senior member of the", 20, 122);
+    gfx_PrintStringXY("highly exclusive and extremely", 20, 132);
+       while (!os_GetCSC());
+    gfx_FillRectangle(0, 120, 280, 20);
+    gfx_PrintStringXY("prestigious Hunter's Club.", 20, 122);
+    gfx_PrintStringXY("His collection of rare pelts and trophies", 20, 132);
+       while (!os_GetCSC());
+    gfx_FillRectangle(0, 120, 280, 20);
+    gfx_PrintStringXY("was the envy of everyone, especially your", 20, 122);
+    gfx_PrintStringXY("uncle Fred.", 20, 132);
+       while (!os_GetCSC());
+    gfx_FillRectangle(0, 120, 280, 20);
+    gfx_PrintStringXY("One day, your father went hunting with Fred", 20, 122);
+    gfx_PrintStringXY("and vanished. Fred said that he was finally", 20, 132);
+       while (!os_GetCSC());
+    gfx_FillRectangle(0, 120, 280, 20);
+    gfx_PrintStringXY("killed by one of the beasts he pursued,", 20, 122);
+    gfx_PrintStringXY("and everyone believed him.", 20, 132);
+       while (!os_GetCSC());
+       while (!os_GetCSC());
+    gfx_FillRectangle(0, 120, 280, 20);
+    gfx_PrintStringXY("However, you think your uncle actually", 20, 122);
+    gfx_PrintStringXY("killed your father so that he could hold", 20, 132);
+       while (!os_GetCSC());
+    gfx_FillRectangle(0, 120, 280, 20);
+    gfx_PrintStringXY("the title of Greatest Hunter.", 20, 122);
+    gfx_PrintStringXY("To get revenge, you decide to pursue the", 20, 132);
+       while (!os_GetCSC());
+    gfx_FillRectangle(0, 120, 280, 20);
+    gfx_PrintStringXY("title yourself..." 20, 122);
+       while (!os_GetCSC());
+    gfx_FillRectangle(0, 120, 280, 20);
+    gfx_PrintStringXY("And so the saga begins...",20,122);
+       while (!os_GetCSC());
+ 
     return;
+    
 }
 
 
