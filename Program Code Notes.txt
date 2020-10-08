@@ -1,2 +1,4 @@
-The program will not compile correctly when I tried.
+I'll try editing main.c to hopefully work.
 
+The gfx folder in the src folder does not work as far as I can tell. I just borrowed files from the tileset and tilemap examples in the GraphX Library here:
+https://github.com/CE-Programming/toolchain/wiki/GraphX-Library:-Creating-Tilemaps
