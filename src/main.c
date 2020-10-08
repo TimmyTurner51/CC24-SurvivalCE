@@ -15,6 +15,9 @@
 // graphx c lib. These are the same as in ICE.
 #include <graphx.h>
 
+#include <keypadc.h>
+#include <keypadc.h>
+
 /* Standard headers */
 #include <math.h>
 #include <stdio.h>
@@ -59,6 +62,8 @@ void printText(const char *text, uint8_t x, uint8_t y);
 // If you don't make prototypes, you definition must be before where you use it.
 void run_intro(void);
 
+void draw_splash(void);
+
 
 
 /* Put all your code here */
@@ -68,24 +73,29 @@ void main(void){
     gfx_Begin();
     //Run the introduction
     run_intro();
+    //Display Splash screen.
+    draw_splash();
     //Restore the screen.
     gfx_End();
 }
 
+void draw_splash(void){
+    //int i=0;
+    //This is actually a green color
+    gfx_FillScreen(OS_COLOR_BLACK);
+    while(!kb_IsDown(kb_Key2nd) && !kb_IsDown(kb_KeyDel)){
+        //Draw whatever animations go here.
+    }
+}
+
 //Here's the actual code for run_intro;
-//run_intro prints messages to the screen with a 1 second delay between each one.
-//The user can press a key at any time to skip to the end.
 void run_intro(void){
     //Make screen black
     gfx_FillScreen(00);
     gfx_SetTextFGColor(253);
     //Wait for a moment
     delay(1000);
-    //The number of messages to print during the intro.
     const int8_t numMessages=15;
-    //Array (fixed length list) stores messages to print.
-    //Each message has a maximum length of 150 characters
-    //You can think of a string as just a list of characters.
     const char messages[numMessages][150]={
      "Your father was a senior member of the",
      "highly exclusive and extremely",
@@ -103,14 +113,9 @@ void run_intro(void){
      "To get revenge, you decide to pursue the",
      "title yourself..."
     };
-    //Print the messages one by one
     for(int8_t i =0; i<numMessages;i++){
         gfx_PrintStringXY(messages[i],0,10*i);
-        //Make a delay so the text can be read.
-        //It's broken up so that it feels responsive.
-        //If I just said, delay(1000) and then checked for the keypress,
-        //it might not pick it up. If it did, it could be up to a second of delay 
-        //before the intro gets skipped.
+        //gfx_PrintInt(i,2);
         for(int8_t j = 0; j < 10; j++){
            if(os_GetCSC())return;
            delay(100);
