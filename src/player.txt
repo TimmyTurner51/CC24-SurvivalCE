@@ -1,0 +1,59 @@
+//Just a code snippet for player and item data. States are easier-dump to file, restore from file.
+
+
+#define ITEM_NULL 0
+#define ITEM_SWORD 1
+#define ITEM_MUSKET 2
+#define ITEM_PISTOL 3
+#define ITEM_SHOTGUN 4
+#define ITEM_BOW 5
+#define ITEM_STICK 6
+#define ITEM_ARROW 7
+#define ITEM_BULLET 8
+#define ITEM_SHELL 9
+
+struct item{
+	int8_t type;
+	int8_t num;
+};
+
+struct player_struct{
+	int8_t health;
+	int8_t coins;
+	int8_t objectives[8];
+	struct item inventory[3][8];
+	struct item slot_a;
+	struct item slot_b;
+	struct item slot_c;
+}player;
+
+void init_player(void){
+	player.health=6;
+	player.coins=0;
+	for(int8_t i = 0; i < 8; i++){
+		player.objectives[i]=0;
+	}
+	struct item i1;
+	i1.type=ITEM_SWORD;
+	i1.num=1;
+	struct item i2;
+	i2.type=ITEM_NULL;
+	i2.num=0;
+	struct item i3;
+	i3.type=ITEM_NULL;
+	i4.num=0;
+	player.slot_a=i1;
+	player.slot_b=i2;
+	player.slot_c=i3;
+	for(int8_t i = 0; i < 3; i++){
+		for(int8_t j = 0; j < 8; j++){
+			item it;
+			it.type=0;
+			it.num=1;
+			player.inventory[i][j]=it;
+		}
+	}
+}
+
+
+
