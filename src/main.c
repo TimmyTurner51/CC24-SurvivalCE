@@ -133,7 +133,7 @@ void run_intro(void){
     gfx_PrintStringXY("To get revenge, you decide to pursue the", 20, 132);
        while (!os_GetCSC());
     gfx_FillRectangle(0, 120, 280, 20);
-    gfx_PrintStringXY("title yourself..." 20, 122);
+    gfx_PrintStringXY("title yourself...", 20, 122);
        while (!os_GetCSC());
     gfx_FillRectangle(0, 120, 280, 20);
     gfx_PrintStringXY("And so the saga begins...",20,122);
