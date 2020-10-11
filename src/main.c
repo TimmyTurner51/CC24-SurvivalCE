@@ -5,6 +5,8 @@
 // Description: Cemetech CC24 submission.
 ////////////////////////////////////////
 
+//Note: If you want, you can put the code from player.txt into here, replacing the player struct.
+
 /* Keep these headers */
 #include <stdbool.h>
 #include <stddef.h>
