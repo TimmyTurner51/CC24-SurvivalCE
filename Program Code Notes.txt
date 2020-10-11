@@ -1,4 +1,9 @@
-I'll try editing main.c to hopefully work.
+How can I define variables?
+For example, I'm using this line several times:
+            #define TEXT_LINE1 "The text to display on line 1 of the text box...";
+...and when compiling, it says Illegal redefinition.
+
+
 
 The gfx folder in the src folder does not work as far as I can tell. I just borrowed files from the tileset and tilemap examples in the GraphX Library here:
 https://github.com/CE-Programming/toolchain/wiki/GraphX-Library:-Creating-Tilemaps
