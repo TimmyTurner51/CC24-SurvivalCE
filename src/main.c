@@ -80,8 +80,14 @@ void main(void){
     run_intro();
     //Display Splash screen.
     draw_splash();
+
+    mainloop();
     //Restore the screen.
     gfx_End();
+}
+
+void mainloop(){
+	//ALL CODE FOR ACTUAL GAME HERE
 }
 
 void draw_splash(void){
