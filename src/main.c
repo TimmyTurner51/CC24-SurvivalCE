@@ -69,7 +69,7 @@ void draw_splash(void);
 
 void text_box(void);
 
-
+void mainloop(void);
 
 /* Put all your code here */
 void main(void){
@@ -88,6 +88,28 @@ void main(void){
 
 void mainloop(){
 	//ALL CODE FOR ACTUAL GAME HERE
+/*
+BTW this is a multiline comment
+1) Check for saved state appvar
+2) If not present, initialize it
+3) Otherwise, load state and continue
+
+Mechanics:
+store rooms in appvar:
+1:
+	1:
+	binary representation
+	2:
+2: etc
+
+Compress? Keep a working state?
+I need to find more time to work on this...
+
+
+
+
+
+*/
 }
 
 void draw_splash(void){
