@@ -112,6 +112,9 @@ I need to find more time to work on this...
 */
 	
 	ti_CloseAll();
+	char nameBuffer[10];
+	ti_var_t var;
+	char string[] = "AppVar string";
 	
 	os_PutStrFull("Checking for savestates..");
 	
