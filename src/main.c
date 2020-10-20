@@ -111,20 +111,9 @@ I need to find more time to work on this...
 
 */
 	
-	ti_CloseAll();
-	char nameBuffer[10];
-	ti_var_t var;
-	char string[] = "AppVar string";
-	
-	os_PutStrFull("Checking for savestates..");
-	
-	/* Open SurvivalCE savestate appvar if it exists. If it doesn't, it'll make it */
-	var = ti_Open("SrvCEss", "w");
-	if (var == 0)
-	{
-	os_PutStrFull("Savestates not found!");
-        return 1;
-	}
+
+ 
+
 	
 	
 }
@@ -149,6 +138,20 @@ void run_intro(void){
     gfx_SetTextFGColor(253);
     //Wait for a moment
     delay(1000);
+
+
+    //make a appvar loading screen, checking for all required appvars...
+        ti_CloseAll();
+        gfx_SetColor(255);
+        gfx_Rectangle(30, 80, 260, 80);
+        gfx_Rectangle(31, 81, 258, 78);
+        gfx_PrintStringXY("Loading Game Data...", 30, 94);
+        delay(3000);
+
+
+    //Open SurvivalCE savestate appvar if it exists. If it doesn't, it'll make it
+    ti_Open("SrvCEss", "w");
+
 
     gfx_SetColor(115);
  
