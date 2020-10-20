@@ -122,6 +122,12 @@ void draw_splash(void){
     //int i=0;
     //This is actually a green color
     gfx_FillScreen(OS_COLOR_BLACK);
+	
+	
+	//btw, I found out that OS_COLOR_BLACK has a value of 12, which is a green color in Graphx. 
+	//So theoretically, replacing OS_COLOR_BLACK above with 12 will look the same...
+	
+	
     while(!kb_IsDown(kb_Key2nd) && !kb_IsDown(kb_KeyDel)){
         //Draw whatever animations go here.
     }
@@ -138,6 +144,8 @@ void run_intro(void){
     gfx_SetTextFGColor(253);
     //Wait for a moment
     delay(1000);
+ 
+
 
 
     //make a appvar loading screen, checking for all required appvars...
@@ -145,14 +153,15 @@ void run_intro(void){
         gfx_SetColor(255);
         gfx_Rectangle(30, 80, 260, 80);
         gfx_Rectangle(31, 81, 258, 78);
-        gfx_PrintStringXY("Loading Game Data...", 30, 94);
-        delay(3000);
+        gfx_PrintStringXY("Loading Game Data...", 50, 94);
+   //Open SurvivalCE savestate appvar if it exists. If it doesn't, it'll make it
+	ti_Open("SrvCEss", "w");        
+	delay(3000);
 
 
-    //Open SurvivalCE savestate appvar if it exists. If it doesn't, it'll make it
-    ti_Open("SrvCEss", "w");
 
-
+    gfx_FillScreen(00);
+    
     gfx_SetColor(115);
  
     gfx_FillRectangle(20, 190, 280, 40);
