@@ -110,6 +110,20 @@ I need to find more time to work on this...
 
 
 */
+	
+	ti_CloseAll();
+	
+	os_PutStrFull("Checking for savestates..");
+	
+	/* Open SurvivalCE savestate appvar if it exists. If it doesn't, it'll make it */
+	var = ti_Open("SrvCEss", "w");
+	if (var == 0)
+	{
+	os_PutStrFull("Savestates not found!");
+        return 1;
+	}
+	
+	
 }
 
 void draw_splash(void){
