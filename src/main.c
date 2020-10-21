@@ -29,6 +29,9 @@
 
     int8_t x;
     int8_t y;
+    int8_t playerX;
+    int8_t playerY;
+    int8_t health;
 
 struct playerdata{
     int24_t score;//The player's score
@@ -123,23 +126,57 @@ I need to find more time to work on this...
 
 void draw_splash(void){
   
+    bool up;
+    bool down;
+    bool left;
+    bool right;
+    kb_key_t arrows;
 
 
-    while(!kb_IsDown(kb_Key2nd) && !kb_IsDown(kb_KeyDel)){
-        
+    playerX = 120;
+    playerY = 160;
+       
 
         for (x = 0; x < 20; x++) {
             for (y = 0; y < 15; y++) {
 
-                /* green colored rectangle */
-                gfx_Sprite_NoClip(grass, x * 16, y * 16);
-
+                gfx_Sprite(grass, x * 16, y * 16);
 
             }
 
         }
 
+        gfx_SetColor(116);
+        gfx_FillRectangle(0, 0, 320, 18);
+        gfx_SetTextFGColor(0);
+        gfx_PrintStringXY("Objective: None", 2, 2);
 
+        gfx_SetColor(116);
+        gfx_FillRectangle(0, 210, 320, 30);
+        gfx_SetColor(230);
+        
+        for (x = 0; x < health; x++) {
+            gfx_FillRectangle(10 + (x * 6), 220, 4, 4);
+        }
+
+
+
+      while (!kb_IsDown(kb_KeyClear)) {
+
+        
+        right = arrows & kb_Right;
+
+        if (right) {
+
+            playerY++;
+
+        }
+
+        gfx_PrintInt(int playerY, uint8_t 2);
+        gfx_SetColor(230);
+        gfx_FillRectangle(playerX, playerY, 20, 20);
+
+        
     }
 }
 
@@ -150,13 +187,11 @@ void run_intro(void) {
 
     //set transparent color to white so that we can draw the maps...
 
-    gfx_SetTransparentColor(255);
+    gfx_SetTransparentColor(190);
     for (x = 0; x < 20; x++) {
         for (y = 0; y < 15; y++) {
 
-            /* green colored rectangle */
-            gfx_Sprite_NoClip(grass, x * 16, y * 16);
-
+            gfx_Sprite_NoClip(stone, x * 16, y * 16);
 
         }
 
@@ -167,7 +202,8 @@ void run_intro(void) {
     //Check for all required appvars...
     ti_CloseAll();
     //Open SurvivalCE savestate appvar if it exists. If it doesn't, it'll make it
-    ti_Open("SrvCEss", "w");
+        ti_Open("SrvCEss", "w");
+
 
 
     gfx_SetColor(115);
