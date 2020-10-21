@@ -24,9 +24,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-//include the tileset.h file...
-#include "gfx/tileset.h"
 
+#include "gfx/gfx.h"
+
+    int8_t x;
+    int8_t y;
 
 struct playerdata{
     int24_t score;//The player's score
@@ -87,8 +89,8 @@ void main(void){
     gfx_End();
 }
 
-void mainloop(){
-	//ALL CODE FOR ACTUAL GAME HERE
+void mainloop() {
+    //ALL CODE FOR ACTUAL GAME HERE
 /*
 BTW this is a multiline comment
 1) Check for saved state appvar
@@ -98,9 +100,9 @@ BTW this is a multiline comment
 Mechanics:
 store rooms in appvar:
 1:
-	1:
-	binary representation
-	2:
+    1:
+    binary representation
+    2:
 2: etc
 
 Compress? Keep a working state?
@@ -111,53 +113,63 @@ I need to find more time to work on this...
 
 
 */
-	
 
- 
 
-	
+
+  
+
 	
 }
 
 void draw_splash(void){
-    //int i=0;
-    //This is actually a green color
-    gfx_FillScreen(OS_COLOR_BLACK);
-	
-	
-	//btw, I found out that OS_COLOR_BLACK has a value of 12, which is a green color in Graphx. 
-	//So theoretically, replacing OS_COLOR_BLACK above with 12 will look the same...
-	
-	
+  
+
+
     while(!kb_IsDown(kb_Key2nd) && !kb_IsDown(kb_KeyDel)){
-        //Draw whatever animations go here.
+        
+
+        for (x = 0; x < 20; x++) {
+            for (y = 0; y < 15; y++) {
+
+                /* green colored rectangle */
+                gfx_Sprite_NoClip(grass, x * 16, y * 16);
+
+
+            }
+
+        }
+
+
     }
 }
 
 
 
 //Here's the actual code for run_intro;
-void run_intro(void){
+void run_intro(void) {
+
+    //set transparent color to white so that we can draw the maps...
+
+    gfx_SetTransparentColor(255);
+    for (x = 0; x < 20; x++) {
+        for (y = 0; y < 15; y++) {
+
+            /* green colored rectangle */
+            gfx_Sprite_NoClip(grass, x * 16, y * 16);
 
 
-    //Make screen black
-    gfx_FillScreen(00);
+        }
+
+    }
+
     gfx_SetTextFGColor(253);
-    //Wait for a moment
-    delay(1000);
- 
+
+    //Check for all required appvars...
+    ti_CloseAll();
+    //Open SurvivalCE savestate appvar if it exists. If it doesn't, it'll make it
+    ti_Open("SrvCEss", "w");
 
 
-
-    //make a appvar loading screen, checking for all required appvars...
-        ti_CloseAll();
-
-   //Open SurvivalCE savestate appvar if it exists. If it doesn't, it'll make it
-	ti_Open("SrvCEss", "w");        
-
-
-    gfx_FillScreen(12);
-    
     gfx_SetColor(115);
  
     gfx_FillRectangle(20, 190, 280, 40);
