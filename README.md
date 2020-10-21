@@ -12,4 +12,4 @@ Your father was a senior member of the highly exclusive and extremely prestigiou
 ...the perfect story for the perfect adventurer...
 
 
-
+NOTE: WORKS FINE ON OS 5.3+, OS 5.0 crashes.
