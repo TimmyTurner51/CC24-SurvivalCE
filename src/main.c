@@ -163,8 +163,12 @@ void draw_splash(void){
 
       while (!kb_IsDown(kb_KeyClear)) {
 
-        
-        right = arrows & kb_Right;
+        right = kb_isDown(kb_KeyRight);
+	//This should work. I think.
+	//the line below does a bitwise and between the right boolean and the constant containing the
+	      //keycode for the right arrow key. The line above sets the right boolean 
+	      //to the output of a test for the right arrow.
+        //right = arrows & kb_Right;
 
         if (right) {
 
