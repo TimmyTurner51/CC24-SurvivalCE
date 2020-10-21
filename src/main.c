@@ -24,7 +24,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-
+//include the tileset.h file...
+#include "gfx/tileset.h"
 
 
 struct playerdata{
@@ -150,17 +151,12 @@ void run_intro(void){
 
     //make a appvar loading screen, checking for all required appvars...
         ti_CloseAll();
-        gfx_SetColor(255);
-        gfx_Rectangle(30, 80, 260, 80);
-        gfx_Rectangle(31, 81, 258, 78);
-        gfx_PrintStringXY("Loading Game Data...", 50, 94);
+
    //Open SurvivalCE savestate appvar if it exists. If it doesn't, it'll make it
 	ti_Open("SrvCEss", "w");        
-	delay(3000);
 
 
-
-    gfx_FillScreen(00);
+    gfx_FillScreen(12);
     
     gfx_SetColor(115);
  
