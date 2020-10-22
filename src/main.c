@@ -33,6 +33,7 @@
     int8_t OldX;
     int8_t OldY;
     int8_t health;
+    int8_t startX;
 
 struct playerdata{
     int24_t score;//The player's score
@@ -127,57 +128,45 @@ I need to find more time to work on this...
 	
 }
 
-gfx_sprite_t * sprites[5];
-//5 sprites for now
-int8_t room[20][12];
-//room. Load separately
-const int8_t offset = 12;//thickness of upper bar
-void drawRoom(void){
-	int8_t i;
-    int8_t j;
-    for(i=0; i < 20; i++){
-    	for(j=0;j<12;j++){
-        	gfx_Sprite_NoClip(16*i,16*j+offset,sprites[room[i][j]])
-        }
-    }
-}
-
-
 void draw_splash(void) {
 
 
-    //set the palette...
-    gfx_SetPalette(mypalette, sizeof_mypalette, 0);
 
 
     for (x = 0; x < 20; x++) {
         for (y = 0; y < 15; y++) {
 
-            gfx_Sprite(dirt, x * 16, y * 16);
+            gfx_Sprite(grass, x * 16, y * 16);
 
         }
 
     }
 
-    gfx_SetColor(115);
+    gfx_SetColor(112);
     gfx_FillRectangle(0, 0, 320, 18);
     gfx_PrintStringXY("Objective: None", 2, 2);
-
     gfx_FillRectangle(0, 210, 320, 30);
-
-
-    gfx_SetColor(1);
-
+    //inventory hotbar
+    gfx_Sprite_NoClip(inventory_box, 117-25, 213);
+    gfx_Sprite_NoClip(inventory_box, 117, 213);
+    gfx_Sprite_NoClip(inventory_box, 117 + 25, 213);
+    gfx_Sprite_NoClip(inventory_box, 117 + 50, 213);
+    gfx_Sprite_NoClip(inventory_box, 117 + 75, 213);
+    gfx_SetColor(230);
+    gfx_SetTransparentColor(1);
     for (x = 0; x < health; x++) {
-        gfx_FillRectangle(10 + (x * 6), 220, 4, 4);
+        gfx_ScaledTransparentSprite_NoClip(heart, 200 + (x * 13), 194, 2, 2);
     }
 
-
-
-
+    dir = 1;
 
     while (!kb_IsDown(kb_KeyClear)) {
 
+        // player movement code goes here...
+
+        if (dir = 1) {
+            gfx_Sprite_NoClip(player_dirF_1, 172, 113);
+        }
 
 
     }
@@ -201,19 +190,21 @@ void run_intro(void) {
 
     }
 
-    gfx_SetTextFGColor(253);
+    gfx_SetTextFGColor(250);
 
     //Check for all required appvars...
     ti_CloseAll();
     //Open SurvivalCE savestate appvar if it exists. If it doesn't, it'll make it
-	//Michael0x18: Write mode? Do you mean "r"? for read? I think if you do that you have a risk of overwriting a state. Also you can't read from it in write mode.
-	//Maybe check it with r, then if you get an error make it...
         ti_Open("SrvCEss", "w");
 
-        /* fix so that it only sets health to 9 when the appvar is created only. Just here to test with */
+        /* fix so that it only sets health to 9 when the appvar is created only.*/
+
         health = 9;
 
-    gfx_SetColor(115);
+             //set the palette...
+    gfx_SetPalette(mypalette, sizeof_mypalette, 0);
+    gfx_SetTextFGColor(249);
+    gfx_SetColor(112);
  
     gfx_FillRectangle(20, 190, 280, 40);
     gfx_PrintStringXY("Your father was a senior member of the", 24, 195);
