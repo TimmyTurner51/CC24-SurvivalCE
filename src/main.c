@@ -27,10 +27,11 @@
 
 #include "gfx/gfx.h"
 
+
     int8_t x;
     int8_t y;
-    int8_t playerX;
-    int8_t playerY;
+    int8_t OldX;
+    int8_t OldY;
     int8_t health;
 
 struct playerdata{
@@ -82,7 +83,9 @@ void main(void){
     //Put the screen in 256 color mode instead of 16 color.
     //Same as ICE's begin. (det(0), I think).
     gfx_Begin();
-    //Run the introduction
+    //set the palette...
+    gfx_SetPalette(mypalette, sizeof_mypalette, 0);
+    //Run the introduction    
     run_intro();
     //Display Splash screen.
     draw_splash();
@@ -124,64 +127,45 @@ I need to find more time to work on this...
 	
 }
 
-void draw_splash(void){
-  
-    bool up;
-    bool down;
-    bool left;
-    bool right;
-    kb_key_t arrows;
+void draw_splash(void) {
 
 
-    playerX = 120;
-    playerY = 160;
-       
+    //set the palette...
+    gfx_SetPalette(mypalette, sizeof_mypalette, 0);
 
-        for (x = 0; x < 20; x++) {
-            for (y = 0; y < 15; y++) {
 
-                gfx_Sprite(grass, x * 16, y * 16);
+    for (x = 0; x < 20; x++) {
+        for (y = 0; y < 15; y++) {
 
-            }
+            gfx_Sprite(dirt, x * 16, y * 16);
 
         }
 
-        gfx_SetColor(116);
-        gfx_FillRectangle(0, 0, 320, 18);
-        gfx_SetTextFGColor(0);
-        gfx_PrintStringXY("Objective: None", 2, 2);
-
-        gfx_SetColor(116);
-        gfx_FillRectangle(0, 210, 320, 30);
-        gfx_SetColor(230);
-        
-        for (x = 0; x < health; x++) {
-            gfx_FillRectangle(10 + (x * 6), 220, 4, 4);
-        }
-
-
-
-      while (!kb_IsDown(kb_KeyClear)) {
-
-        right = kb_isDown(kb_KeyRight);
-	//This should work. I think.
-	//the line below does a bitwise and between the right boolean and the constant containing the
-	      //keycode for the right arrow key. The line above sets the right boolean 
-	      //to the output of a test for the right arrow.
-        //right = arrows & kb_Right;
-
-        if (right) {
-
-            playerY++;
-
-        }
-
-        gfx_PrintInt(int playerY, uint8_t 2);
-        gfx_SetColor(230);
-        gfx_FillRectangle(playerX, playerY, 20, 20);
-
-        
     }
+
+    gfx_SetColor(115);
+    gfx_FillRectangle(0, 0, 320, 18);
+    gfx_PrintStringXY("Objective: None", 2, 2);
+
+    gfx_FillRectangle(0, 210, 320, 30);
+
+
+    gfx_SetColor(1);
+
+    for (x = 0; x < health; x++) {
+        gfx_FillRectangle(10 + (x * 6), 220, 4, 4);
+    }
+
+
+
+
+
+    while (!kb_IsDown(kb_KeyClear)) {
+
+
+
+    }
+
 }
 
 
@@ -195,7 +179,7 @@ void run_intro(void) {
     for (x = 0; x < 20; x++) {
         for (y = 0; y < 15; y++) {
 
-            gfx_Sprite_NoClip(stone, x * 16, y * 16);
+            gfx_Sprite_NoClip(wood, x * 16, y * 16);
 
         }
 
@@ -208,7 +192,8 @@ void run_intro(void) {
     //Open SurvivalCE savestate appvar if it exists. If it doesn't, it'll make it
         ti_Open("SrvCEss", "w");
 
-
+        /* fix so that it only sets health to 9 when the appvar is created only. Just here to test with */
+        health = 9;
 
     gfx_SetColor(115);
  
