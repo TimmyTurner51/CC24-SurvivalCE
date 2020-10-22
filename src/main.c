@@ -127,6 +127,14 @@ I need to find more time to work on this...
 	
 }
 
+gfx_sprite_t* room[20][12];
+const int8_t offset=12;
+
+void drawRoom(void){
+	//see google doc
+}
+
+
 void draw_splash(void) {
 
 
@@ -190,6 +198,8 @@ void run_intro(void) {
     //Check for all required appvars...
     ti_CloseAll();
     //Open SurvivalCE savestate appvar if it exists. If it doesn't, it'll make it
+	//Michael0x18: Write mode? Do you mean "r"? for read? I think if you do that you have a risk of overwriting a state. Also you can't read from it in write mode.
+	//Maybe check it with r, then if you get an error make it...
         ti_Open("SrvCEss", "w");
 
         /* fix so that it only sets health to 9 when the appvar is created only. Just here to test with */
