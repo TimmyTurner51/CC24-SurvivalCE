@@ -6,11 +6,11 @@ libs     D1A9F9 D1AA4A            51h
 startup  D1AA4A D1AA89            3Fh
 cleanup  D1AA89 D1AA9D            14h
 exit     D1AA9D D1AAA3             6h
-code     D1AAA3 D1B004           561h
-data     D1B004 D1B6DF           6DBh
-strsect  D1B6DF D1B918           239h
-text     D1B918 D1B918             0h
-bss      D031F6 D03225 D13FD6     2Fh
+code     D1AAA3 D1B008           565h
+data     D1B008 D1B7E5           7DDh
+strsect  D1B7E5 D1BA1E           239h
+text     D1BA1E D1BA1E             0h
+bss      D031F6 D03226 D13FD6     30h
 header   D1A87F D1A882             3h
 
 Label                                 Value
@@ -166,17 +166,19 @@ _exit                               = D1AA9F
 __exit                              = D1AA78
 __exitsp                            = D1AA78
 __errsp                             = D1AA78
-_grass_data                         = D1B026
-_heart_data                         = D1B128
-_inventory_box_data                 = D1B16A
-_mypalette                          = D1B3DD
-_wood_data                          = D1B5DD
-_printText                          = D1AFE2
-_run_intro                          = D1AC90
+_grass_data                         = D1B02A
+_heart_data                         = D1B12C
+_inventory_box_data                 = D1B16E
+_mypalette                          = D1B3E1
+_player_dirF_1_data                 = D1B5E1
+_wood_data                          = D1B6E3
+_printText                          = D1AFE6
+_run_intro                          = D1ACB4
 _draw_splash                        = D1AAFE
 _mainloop                           = D1AAFD
 _main                               = D1AAD2
-_player                             = D031FC
+_player                             = D031FD
+_dir                                = D031FC
 _startX                             = D031FB
 _health                             = D031FA
 _OldY                               = D031F9
