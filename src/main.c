@@ -195,6 +195,8 @@ void run_intro(void) {
     //Check for all required appvars...
     ti_CloseAll();
     //Open SurvivalCE savestate appvar if it exists. If it doesn't, it'll make it
+	//We need to make it check for if it exists, which is NOT what it's doing now, it's just as a test, I don't know
+	//how to make it check and all that stuff in C. I do know in ICE... but still.
         ti_Open("SrvCEss", "w");
 
         /* fix so that it only sets health to 9 when the appvar is created only.*/
