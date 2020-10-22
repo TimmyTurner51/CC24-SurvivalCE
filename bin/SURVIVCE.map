@@ -2,14 +2,14 @@ Segment  Base   Top    High   Length
 -------- ------ ------ ------ -------
 icon     D1A882 D1A9A1           11Fh
 launcher D1A9A1 D1A9F9            58h
-libs     D1A9F9 D1AA42            49h
-startup  D1AA42 D1AA81            3Fh
-cleanup  D1AA81 D1AA95            14h
-exit     D1AA95 D1AA9B             6h
-code     D1AA9B D1AFBF           524h
-data     D1AFBF D1B1E5           226h
-strsect  D1B1E5 D1B41E           239h
-text     D1B41E D1B41E             0h
+libs     D1A9F9 D1AA46            4Dh
+startup  D1AA46 D1AA85            3Fh
+cleanup  D1AA85 D1AA99            14h
+exit     D1AA99 D1AA9F             6h
+code     D1AA9F D1AF79           4DAh
+data     D1AF79 D1B39F           426h
+strsect  D1B39F D1B5D8           239h
+text     D1B5D8 D1B5D8             0h
 bss      D031F6 D03224 D13FD6     2Eh
 header   D1A87F D1A882             3h
 
@@ -150,32 +150,32 @@ _asm_DisableAPD           = 021134
 _asm_EnableAPD            = 021138
 _asm_DrawStatusBar        = 021A3C
 _asm_ArcChk               = 022040
-_os_DisableHomeTextBuffer = D1AA9B
-_os_EnableHomeTextBuffer  = D1AAAD
-__frameset0               = D1AABF
-__frameset                = D1AACA
+_os_DisableHomeTextBuffer = D1AA9F
+_os_EnableHomeTextBuffer  = D1AAB1
+__frameset0               = D1AAC3
 __setflag                 = 000218
 __findlibload             = D1A9A1
 __program_icon            = D1A887
 __program_description     = D1A989
-__ccleanup                = D1AA81
+__ccleanup                = D1AA85
 _errno                    = D008DC
 _init                     = D1A882
-_exit                     = D1AA97
-__exit                    = D1AA70
-__exitsp                  = D1AA70
-__errsp                   = D1AA70
-_grass_data               = D1AFE1
-_stone_data               = D1B0E3
-_printText                = D1AF9D
-_run_intro                = D1AC71
-_draw_splash              = D1AAEE
-_mainloop                 = D1AAED
-_main                     = D1AAD8
+_exit                     = D1AA9B
+__exit                    = D1AA74
+__exitsp                  = D1AA74
+__errsp                   = D1AA74
+_dirt_data                = D1AF9B
+_mypalette                = D1B09D
+_wood_data                = D1B29D
+_printText                = D1AF57
+_run_intro                = D1AC25
+_draw_splash              = D1AAFA
+_mainloop                 = D1AAF9
+_main                     = D1AACE
 _player                   = D031FB
 _health                   = D031FA
-_playerY                  = D031F9
-_playerX                  = D031F8
+_OldY                     = D031F9
+_OldX                     = D031F8
 _y                        = D031F7
 _x                        = D031F6
 _ti_CloseAll              = D1AA0D
@@ -183,9 +183,10 @@ _ti_Open                  = D1AA11
 _gfx_Begin                = D1AA1E
 _gfx_End                  = D1AA22
 _gfx_SetColor             = D1AA26
-_gfx_PrintStringXY        = D1AA2A
-_gfx_SetTextFGColor       = D1AA2E
-_gfx_FillRectangle        = D1AA32
-_gfx_Sprite               = D1AA36
-_gfx_Sprite_NoClip        = D1AA3A
-_gfx_SetTransparentColor  = D1AA3E
+_gfx_SetPalette           = D1AA2A
+_gfx_PrintStringXY        = D1AA2E
+_gfx_SetTextFGColor       = D1AA32
+_gfx_FillRectangle        = D1AA36
+_gfx_Sprite               = D1AA3A
+_gfx_Sprite_NoClip        = D1AA3E
+_gfx_SetTransparentColor  = D1AA42
