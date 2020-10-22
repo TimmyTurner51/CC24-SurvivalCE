@@ -18,6 +18,14 @@ extern "C" {
 #include "traptile2.h"
 #include "wood.h"
 #include "wood2.h"
+#include "heart.h"
+#include "inventory_box.h"
+#include "player_dirF_1.h"
+#include "player_dirF_2.h"
+#include "player_dirF_3.h"
+#include "player_dirB_1.h"
+#include "player_dirB_2.h"
+#include "player_dirB_3.h"
 
 #ifdef __cplusplus
 }

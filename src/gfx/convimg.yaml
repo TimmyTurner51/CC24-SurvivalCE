@@ -8,4 +8,4 @@ output: c
 palette: mypalette
   images: automatic
 
-convert: sprites  palette: mypalette  transparent-color-index: 0  images:    - water.png    - lava.png    - dirt.png    - grass.png    - fireball.png    - stone.png    - netherrack.png    - sailcloth.png    - traptile1.png    - traptile2.png    - wood.png    - wood2.png
+convert: sprites  palette: mypalette  transparent-color-index: 0  images:    - water.png    - lava.png    - dirt.png    - grass.png    - fireball.png    - stone.png    - netherrack.png    - sailcloth.png    - traptile1.png    - traptile2.png    - wood.png    - wood2.png    - heart.png    - inventory_box.png    - player_dirF_1.png    - player_dirF_2.png    - player_dirF_3.png    - player_dirB_1.png    - player_dirB_2.png    - player_dirB_3.png
