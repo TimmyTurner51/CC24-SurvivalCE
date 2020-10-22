@@ -34,6 +34,7 @@
     int8_t OldY;
     int8_t health;
     int8_t startX;
+    int8_t dir;
 
 struct playerdata{
     int24_t score;//The player's score
@@ -178,9 +179,7 @@ void draw_splash(void) {
 //Here's the actual code for run_intro;
 void run_intro(void) {
 
-    //set transparent color to white so that we can draw the maps...
 
-    gfx_SetTransparentColor(190);
     for (x = 0; x < 20; x++) {
         for (y = 0; y < 15; y++) {
 
@@ -195,16 +194,12 @@ void run_intro(void) {
     //Check for all required appvars...
     ti_CloseAll();
     //Open SurvivalCE savestate appvar if it exists. If it doesn't, it'll make it
-	//We need to make it check for if it exists, which is NOT what it's doing now, it's just as a test, I don't know
-	//how to make it check and all that stuff in C. I do know in ICE... but still.
         ti_Open("SrvCEss", "w");
 
         /* fix so that it only sets health to 9 when the appvar is created only.*/
 
         health = 9;
 
-             //set the palette...
-    gfx_SetPalette(mypalette, sizeof_mypalette, 0);
     gfx_SetTextFGColor(249);
     gfx_SetColor(112);
  
