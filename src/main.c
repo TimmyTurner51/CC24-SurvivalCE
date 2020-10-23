@@ -28,13 +28,16 @@
 #include "gfx/gfx.h"
 
 
-    int8_t x;
-    int8_t y;
-    int8_t OldX;
-    int8_t OldY;
-    int8_t health;
-    int8_t startX;
-    int8_t dir;
+    uint8_t x;
+    uint8_t y;
+    uint8_t OldX;
+    uint8_t OldY;
+    uint8_t health;
+    uint8_t startX;
+    uint8_t dir;
+    uint8_t redraw;
+    uint8_t i;
+
 
 struct playerdata{
     int24_t score;//The player's score
@@ -87,7 +90,7 @@ void main(void){
     gfx_Begin();
     //set the palette...
     gfx_SetPalette(mypalette, sizeof_mypalette, 0);
-    //Run the introduction    
+    //Go to the main menu    
     run_intro();
     //Display Splash screen.
     draw_splash();
@@ -137,36 +140,25 @@ int8_t room[20][12];
 const int8_t offset = 12;//thickness of upper bar
 
 void drawRoom(void) {
-    int8_t i;
-    int8_t j;
-    for (i = 0; i < 20; i++) {
-        for (j = 0; j < 12; j++) {
-            gfx_Sprite_NoClip(sprites[room[i][j]], 16 * i, 16 * j + offset)
+
+    for (x = 0; x < 20; x++) {
+        for (y = 0; y < 15; y++) {
+            //gfx_Sprite_NoClip(sprites[room[i][j]], 16 * i, 16 * j + offset)
+            gfx_Sprite(grass, x * 16, y * 16);
         }
     }
+
 }
 
 
 void draw_splash(void) {
-
-
-
-
-    for (x = 0; x < 20; x++) {
-        for (y = 0; y < 15; y++) {
-
-            gfx_Sprite(grass, x * 16, y * 16);
-
-        }
-
-    }
 
     gfx_SetColor(112);
     gfx_FillRectangle(0, 0, 320, 18);
     gfx_PrintStringXY("Objective: None", 2, 2);
     gfx_FillRectangle(0, 210, 320, 30);
     //inventory hotbar
-    gfx_Sprite_NoClip(inventory_box, 117-25, 213);
+    gfx_Sprite_NoClip(inventory_box, 117 - 25, 213);
     gfx_Sprite_NoClip(inventory_box, 117, 213);
     gfx_Sprite_NoClip(inventory_box, 117 + 25, 213);
     gfx_Sprite_NoClip(inventory_box, 117 + 50, 213);
@@ -183,21 +175,61 @@ void draw_splash(void) {
 
         // player movement code goes here...
 
-        if (dir = 1) {
-            gfx_Sprite_NoClip(player_dirF_1, 172, 113);
+        if (dir = 1) gfx_Sprite_NoClip(player_dirF_1, 156, 113);
+
+
         }
-
-
     }
 
-}
 
-
-
-//Here's the actual code for run_intro;
 void run_intro(void) {
 
-
+    /* main menu */
+    for (x = 0; x < 20; x++) {
+        for (y = 0; y < 15; y++) {
+            gfx_Sprite(dirt, x * 16, y * 16);
+        }
+    }
+    /* buttons */
+    for (OldY = 140; OldY < 200; OldY += 20) {
+        for (OldX = 60; OldX < 244; OldX += 16) {
+            gfx_Sprite(wood, OldX, OldY);
+        }
+    }
+    redraw = 1;
+    y = 140;
+    i = y;
+    while (!kb_IsDown(kb_KeyClear)) {
+        if (redraw == 1) {
+            redraw = 0;
+            /* redraw only the one button that needs it */
+            for (OldX = 60; OldX < 244; OldX += 16) {
+                gfx_Sprite(wood, OldX, i);
+            }
+            /* button text */
+            gfx_PrintStringXY("Play", 148, 142);
+            gfx_PrintStringXY("Help  & Options", 118, 162);
+            gfx_PrintStringXY("Quit", 148, 182);
+            gfx_SetColor(2);
+            gfx_Rectangle(60, y, 192, 16);
+            gfx_Rectangle(61, y + 1, 190, 14);
+        }
+        i = y;
+        if (kb_IsDown(kb_KeyUp) && y > 140) {
+            delay(150);
+            y = y - 20;
+        }
+        if (kb_IsDown(kb_KeyDown) && y < 180) {
+            delay(150);
+            y = y + 20;
+        }
+        if (i != y)                                 redraw = 1;
+        if (kb_IsDown(kb_Key2nd) && y = 140) void play(void);
+        if (kb_IsDown(kb_Key2nd) && y = 160) void help(void);
+        if (kb_IsDown(kb_Key2nd) && y = 180) void quit(void);
+    }
+}
+    void play(void) {
     for (x = 0; x < 20; x++) {
         for (y = 0; y < 15; y++) {
 
@@ -276,6 +308,8 @@ void printText(const char *text, uint8_t xpos, uint8_t ypos){
     os_SetCursorPos(ypos, xpos);
     os_PutStrFull(text);
 }
+void help(void) {
+    /* need a help/options screen. I'm thinking similar to main menu... ? */
 
-
-
+}
+void quit(void) {}
