@@ -37,7 +37,7 @@
     uint8_t dir;
     uint8_t redraw;
     uint8_t i;
-
+    uint8_t option;
 
 struct playerdata{
     int24_t score;//The player's score
@@ -81,7 +81,10 @@ void draw_splash(void);
 
 void text_box(void);
 
-void mainloop(void);
+void play(void);
+void help(void);
+void quit(void);
+
 
 /* Put all your code here */
 void main(void){
@@ -92,44 +95,13 @@ void main(void){
     gfx_SetPalette(mypalette, sizeof_mypalette, 0);
     //Go to the main menu    
     run_intro();
+    if (option = 1) play();
+    if (option = 2) help();
+    if (option = 3) quit();
     //Display Splash screen.
     draw_splash();
-
-    mainloop();
     //Restore the screen.
     gfx_End();
-}
-
-void mainloop() {
-    //ALL CODE FOR ACTUAL GAME HERE
-/*
-BTW this is a multiline comment
-1) Check for saved state appvar
-2) If not present, initialize it
-3) Otherwise, load state and continue
-
-Mechanics:
-store rooms in appvar:
-1:
-    1:
-    binary representation
-    2:
-2: etc
-
-Compress? Keep a working state?
-I need to find more time to work on this...
-
-
-
-
-
-*/
-
-
-
-  
-
-	
 }
 
 
@@ -153,6 +125,7 @@ void drawRoom(void) {
 
 void draw_splash(void) {
 
+    drawRoom();
     gfx_SetColor(112);
     gfx_FillRectangle(0, 0, 320, 18);
     gfx_PrintStringXY("Objective: None", 2, 2);
@@ -199,6 +172,7 @@ void run_intro(void) {
     redraw = 1;
     y = 140;
     i = y;
+    option = 0;
     while (!kb_IsDown(kb_KeyClear)) {
         if (redraw == 1) {
             redraw = 0;
@@ -224,11 +198,14 @@ void run_intro(void) {
             y = y + 20;
         }
         if (i != y)                                 redraw = 1;
-        if (kb_IsDown(kb_Key2nd) && y = 140) void play(void);
-        if (kb_IsDown(kb_Key2nd) && y = 160) void help(void);
-        if (kb_IsDown(kb_Key2nd) && y = 180) void quit(void);
+        if (kb_IsDown(kb_Key2nd) && (y = 140))        option = 1;
+        if (kb_IsDown(kb_Key2nd) && (y = 160))        option = 2;
+        if (kb_IsDown(kb_Key2nd) && (y = 180))        option = 3;
+        if (option != 0)                              return;
     }
+    return;
 }
+
     void play(void) {
     for (x = 0; x < 20; x++) {
         for (y = 0; y < 15; y++) {
@@ -310,6 +287,8 @@ void printText(const char *text, uint8_t xpos, uint8_t ypos){
 }
 void help(void) {
     /* need a help/options screen. I'm thinking similar to main menu... ? */
+
+    return;
 
 }
 void quit(void) {}
