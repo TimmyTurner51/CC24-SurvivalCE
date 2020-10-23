@@ -129,6 +129,24 @@ I need to find more time to work on this...
 	
 }
 
+
+gfx_sprite_t* sprites[5];
+//5 sprites for now
+int8_t room[20][12];
+//room. Load separately
+const int8_t offset = 12;//thickness of upper bar
+
+void drawRoom(void) {
+    int8_t i;
+    int8_t j;
+    for (i = 0; i < 20; i++) {
+        for (j = 0; j < 12; j++) {
+            gfx_Sprite_NoClip(sprites[room[i][j]], 16 * i, 16 * j + offset)
+        }
+    }
+}
+
+
 void draw_splash(void) {
 
 
