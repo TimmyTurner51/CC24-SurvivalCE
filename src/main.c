@@ -144,14 +144,31 @@ void draw_splash(void) {
     }
 
     dir = 1;
-
+    playerX = 156;
+    playerY = 113;
     while (!kb_IsDown(kb_KeyClear)) {
 
         // player movement code goes here...
         kb_Scan();
-    
-        if (dir == 1) gfx_TransparentSprite_NoClip(player_dirF_1, 156, 113);
-        if (dir == 2) gfx_TransparentSprite_NoClip(player_dirB_1, 156, 113);
+        gfx_BlitScreen();
+        if (dir == 1) gfx_TransparentSprite_NoClip(player_dirF_1, playerX, playerY);
+        if (dir == 2) gfx_TransparentSprite_NoClip(player_dirB_1, playerX, playerY);
+        if (dir == 3) gfx_TransparentSprite_NoClip(player_dirL_1, playerX, playerY);
+        if (dir == 4) gfx_TransparentSprite_NoClip(player_dirR_1, playerX, playerY);
+        if (kb_IsDown(kb_Up) && playerY > 0) {
+            playerY--;
+             }
+        if (kb_IsDown(kb_Down) && playerY < 240) {
+            playerY++;
+        }
+        if (kb_IsDown(kb_Left) && playerX > 0) {
+            playerX--;
+        }
+        if (kb_IsDown(kb_Right) && playerX < 320) {
+            playerX++;
+        }
+        gfx_BlitBuffer();
+
 
         }
     }
