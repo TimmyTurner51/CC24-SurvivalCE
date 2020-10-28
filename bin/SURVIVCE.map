@@ -2,20 +2,20 @@ Segment  Base   Top    High   Length
 -------- ------ ------ ------ -------
 icon     D1A882 D1A9A1           11Fh
 launcher D1A9A1 D1A9F9            58h
-libs     D1A9F9 D1AA5C            63h
-startup  D1AA5C D1AA9B            3Fh
-cleanup  D1AA9B D1AAAF            14h
-exit     D1AAAF D1AAB5             6h
-code     D1AAB5 D1B2CF           81Ah
-data     D1B2CF D1BBAE           8DFh
-strsect  D1BBAE D1BE01           253h
-text     D1BE01 D1BE02             1h
-bss      D031F6 D03328 D13FD6    132h
+libs     D1A9F9 D1AA60            67h
+startup  D1AA60 D1AA9F            3Fh
+cleanup  D1AA9F D1AAB3            14h
+exit     D1AAB3 D1AAB9             6h
+code     D1AAB9 D1B30C           853h
+data     D1B30C D1BCED           9E1h
+strsect  D1BCED D1BF40           253h
+text     D1BF40 D1BF41             1h
+bss      D031F6 D03329 D13FD6    133h
 header   D1A87F D1A882             3h
 
 Label                                 Value
 -----------------------------------   ------
-_delay                              = D1AAB5
+_delay                              = D1AAB9
 _boot_GetBootMajorVer               = 000080
 _boot_GetHardwareVer                = 000084
 _boot_GetBootMinorVer               = 00008C
@@ -151,51 +151,43 @@ _asm_DisableAPD                     = 021134
 _asm_EnableAPD                      = 021138
 _asm_DrawStatusBar                  = 021A3C
 _asm_ArcChk                         = 022040
-_os_DisableHomeTextBuffer           = D1AAFE
-_os_EnableHomeTextBuffer            = D1AB10
-__frameset0                         = D1AB22
-__frameset                          = D1AB2D
+_os_DisableHomeTextBuffer           = D1AB02
+_os_EnableHomeTextBuffer            = D1AB14
+__frameset0                         = D1AB26
+__scmpzero                          = 000204
+__frameset                          = D1AB31
 __imul_b                            = 000158
 __imul_b                            = 000150
 __findlibload                       = D1A9A1
 __program_icon                      = D1A887
 __program_description               = D1A989
-__ccleanup                          = D1AA9B
+__ccleanup                          = D1AA9F
 _errno                              = D008DC
 _init                               = D1A882
-_exit                               = D1AAB1
-__exit                              = D1AA8A
-__exitsp                            = D1AA8A
-__errsp                             = D1AA8A
-_dirt_data                          = D1B2F1
-_grass_data                         = D1B3F3
-_heart_data                         = D1B4F5
-_inventory_box_data                 = D1B537
-_mypalette                          = D1B7AA
-_player_dirF_1_data                 = D1B9AA
-_wood_data                          = D1BAAC
-_quit                               = D1B2CE
-_help                               = D1B2CD
-_printText                          = D1B2AB
-_play                               = D1AF82
-_run_intro                          = D1AD26
-_draw_splash                        = D1ABD7
-_drawRoom                           = D1AB80
-_offset                             = D1BE01
-_room                               = D03238
-_sprites                            = D03229
-_main                               = D1AB3B
-_player                             = D03200
-_option                             = D031FF
-_i                                  = D031FE
-_redraw                             = D031FD
-_dir                                = D031FC
-_startX                             = D031FB
-_health                             = D031FA
-_OldY                               = D031F9
-_OldX                               = D031F8
-_y                                  = D031F7
-_x                                  = D031F6
+_exit                               = D1AAB5
+__exit                              = D1AA8E
+__exitsp                            = D1AA8E
+__errsp                             = D1AA8E
+_dirt_data                          = D1B32E
+_grass_data                         = D1B430
+_heart_data                         = D1B532
+_inventory_box_data                 = D1B574
+_mypalette                          = D1B7E7
+_player_dirB_1_data                 = D1B9E7
+_player_dirF_1_data                 = D1BAE9
+_wood_data                          = D1BBEB
+_quit                               = D1B30B
+_help                               = D1B30A
+_printText                          = D1B2E8
+_play                               = D1AFBF
+_run_intro                          = D1AD53
+_draw_splash                        = D1ABE4
+_drawRoom                           = D1AB8D
+_offset                             = D1BF40
+_room                               = D03239
+_sprites                            = D0322A
+_main                               = D1AB3F
+_player                             = D03201
 _ti_CloseAll                        = D1AA0D
 _ti_Open                            = D1AA11
 _gfx_Begin                          = D1AA1E
@@ -208,6 +200,7 @@ _gfx_Rectangle                      = D1AA36
 _gfx_FillRectangle                  = D1AA3A
 _gfx_Sprite                         = D1AA3E
 _gfx_Sprite_NoClip                  = D1AA42
-_gfx_ScaledTransparentSprite_NoClip = D1AA46
-_gfx_SetTransparentColor            = D1AA4A
-_kb_Scan                            = D1AA58
+_gfx_TransparentSprite_NoClip       = D1AA46
+_gfx_ScaledTransparentSprite_NoClip = D1AA4A
+_gfx_SetTransparentColor            = D1AA4E
+_kb_Scan                            = D1AA5C
