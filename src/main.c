@@ -147,7 +147,7 @@ void draw_splash(void) {
     while (!kb_IsDown(kb_KeyClear)) {
 
         // player movement code goes here...
-
+        kb_Scan();
         if (dir = 1) gfx_Sprite_NoClip(player_dirF_1, 156, 113);
 
 
@@ -174,6 +174,7 @@ void run_intro(void) {
     i = y;
     option = 0;
     while (!kb_IsDown(kb_KeyClear)) {
+        kb_Scan();
         if (redraw == 1) {
             redraw = 0;
             /* redraw only the one button that needs it */
