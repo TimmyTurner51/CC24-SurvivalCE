@@ -28,16 +28,16 @@
 #include "gfx/gfx.h"
 
 
-    uint8_t x;
-    uint8_t y;
-    uint8_t OldX;
-    uint8_t OldY;
-    uint8_t health;
-    uint8_t startX;
-    uint8_t dir;
-    uint8_t redraw;
-    uint8_t i;
-    uint8_t option;
+    static uint8_t x;
+    static uint8_t y;
+    static uint8_t OldX;
+    static uint8_t OldY;
+    static uint8_t health;
+    static uint8_t startX;
+    static uint8_t dir;
+    static uint8_t redraw;
+    static uint8_t i;
+    static uint16_t option;
 
 struct playerdata{
     int24_t score;//The player's score
@@ -84,6 +84,7 @@ void text_box(void);
 void play(void);
 void help(void);
 void quit(void);
+
 
 
 /* Put all your code here */
@@ -137,7 +138,7 @@ void draw_splash(void) {
     gfx_Sprite_NoClip(inventory_box, 117 + 50, 213);
     gfx_Sprite_NoClip(inventory_box, 117 + 75, 213);
     gfx_SetColor(230);
-    gfx_SetTransparentColor(1);
+    gfx_SetTransparentColor(181);
     for (x = 0; x < health; x++) {
         gfx_ScaledTransparentSprite_NoClip(heart, 200 + (x * 13), 194, 2, 2);
     }
@@ -148,8 +149,9 @@ void draw_splash(void) {
 
         // player movement code goes here...
         kb_Scan();
-        if (dir = 1) gfx_Sprite_NoClip(player_dirF_1, 156, 113);
-
+    
+        if (dir == 1) gfx_TransparentSprite_NoClip(player_dirF_1, 156, 113);
+        if (dir == 2) gfx_TransparentSprite_NoClip(player_dirB_1, 156, 113);
 
         }
     }
