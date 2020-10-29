@@ -128,7 +128,7 @@ void draw_splash(void) {
     gfx_BlitBuffer();
 
         while (!kb_IsDown(kb_KeyClear)) {
-
+            kb_Scan();
              if kb_IsDown(kb_KeyUp) {
                    dir = 2;
                    playerY--;
@@ -167,6 +167,7 @@ void DrawPlayer(void) {
 
     OldX = playerX;
     OldY = playerY;
+
 }
 
 void run_intro(void) {
