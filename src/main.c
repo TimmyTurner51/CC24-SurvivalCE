@@ -93,8 +93,8 @@ void drawRoom(void) {
         for (x = 0; x < 20; x++) {
                 if ((screenMap[i] > -1))
                 gfx_Sprite(sprites[screenMap[i]], x * 16, y * 16);
-        }
         i++;
+        }
     }
 
 }
@@ -121,6 +121,10 @@ void draw_splash(void) {
 
     OldX = playerX;
     OldY = playerY;
+
+    playerX = 156;
+    playerY = 113;
+    dir = 1;
 
     gfx_GetSprite(background, playerX, playerY);
     DrawPlayer();
@@ -153,6 +157,16 @@ void draw_splash(void) {
              gfx_BlitBuffer();
 
         }
+
+        gamedata[0] = health;
+        gamedata[1] = room;
+        gamedata[2] = playerX;
+        gamedata[3] = playerY;
+        gamedata[4] = dir;
+        ti_CloseAll();
+        appvar = ti_Open("SrvCEss", "w");
+        ti_Write(gamedata, sizeof(gamedata), 1, appvar);
+        ti_CloseAll();
 
     }
 
@@ -343,16 +357,6 @@ void run_intro(void) {
             draw_splash();
         }
 
-
-        gamedata[0] = health;
-        gamedata[1] = room;
-        gamedata[2] = playerX;
-        gamedata[3] = playerY;
-        gamedata[4] = dir;
-        ti_CloseAll();
-        appvar = ti_Open("SrvCEss", "w");
-        ti_Write(gamedata, sizeof(gamedata), 1, appvar);
-        ti_CloseAll();
 
 }
 
