@@ -1,5 +1,5 @@
 ////////////////////////////////////////
-// SurvivalCE Version DEV_0.19
+// SurvivalCE Version DEV_0.22
 // Author: Michael0x18 and TimmyTurner62
 // License: Gnu GPLv2?
 // Description: Cemetech CC24 submission.
@@ -40,31 +40,41 @@
     static uint16_t option;
     static uint16_t playerX;
     static uint16_t playerY;
+    static uint16_t xa;
+    static uint16_t xb;
+    static uint16_t roomX;
+    static uint16_t roomY;
+    static uint16_t room;
+    static ti_var_t appvar;
     static char screenMap[20 * 15];
-    static char wholeMap[20 * 15];
+    static char wholeMap[(20 * 14) * (15 * 14)];
     static gfx_sprite_t* sprites[12] = { dirt, grass, stone, wood, wood2, water, lava, netherrack, fireball, traptile1, traptile2, sailcloth };
+    static uint8_t gamedata[28] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+
+    //CREDITS: (required for CC24, it's the right thing to do)
+    //Map Engine by TimmyTurner62 at cemetech.net. Thanks to Michael0x18 for constant help with code.
+    //Credits to pretty much everyone on cemetech.net, since there's too many helpful people who've helped all throughout!
 
 
 /* Other available headers: stdarg.h, setjmp.h, assert.h, ctype.h, float.h, iso646.h, limits.h, errno.h */
 
-void printText(const char *text, uint8_t x, uint8_t y);
+    void printText(const char *text, uint8_t x, uint8_t y);
 
 
-void run_intro(void);
+    void run_intro(void);
 
-void draw_splash(void);
+    void draw_splash(void);
 
-void text_box(void);
+    void text_box(void);
 
-void play(void);
-void help(void);
-void quit(void);
-void DrawPlayer(void);
-
-        static char gamedata[26];
+    void play(void);
+    void help(void);
+    void quit(void);
+    void DrawPlayer(void);
+    void LoadMapData(void);
+    void saveData(void);
+       
         gfx_TempSprite(background, 16, 16);
-        static uint16_t room;
-        static ti_var_t appvar;
 
 void main(void){
     gfx_Begin();
@@ -84,11 +94,25 @@ void main(void){
 
 
 
+void LoadMapData(void) {
+
+    xa = 0;
+    xb = room;
+    for (y = 0; y < 15; y++) {
+        for (x = 0; x < 20; x++) {
+            screenMap[xa] = wholeMap[xb];
+            xb++;
+            xa++;
+        }
+        xb += 20 * 13;
+    }
+
+}
 
 void drawRoom(void) {
 
     redraw = 0;
-    i = 0;
+    i = room;
     for (y = 0; y < 15; y++) {
         for (x = 0; x < 20; x++) {
                 if ((screenMap[i] > -1))
@@ -101,74 +125,169 @@ void drawRoom(void) {
 
 
 void draw_splash(void) {
-
-    ti_var_t appvar;
-    gfx_SetColor(21);
-    gfx_SetDrawBuffer();
-    drawRoom();
-    gfx_FillRectangle(0, 0, 320, 18);
-    gfx_PrintStringXY("Objective: None", 2, 2);
-    gfx_FillRectangle(0, 210, 320, 30);
-    //inventory hotbar
-    gfx_Sprite_NoClip(inventory_box, 117 - 25, 213);
-    gfx_Sprite_NoClip(inventory_box, 117, 213);
-    gfx_Sprite_NoClip(inventory_box, 117 + 25, 213);
-    gfx_Sprite_NoClip(inventory_box, 117 + 50, 213);
-    gfx_Sprite_NoClip(inventory_box, 117 + 75, 213);
-    for (x = 0; x < health; x++) {
-        gfx_ScaledTransparentSprite_NoClip(heart, 200 + (x * 13), 194, 2, 2);
-    }
-
+ 
     OldX = playerX;
     OldY = playerY;
 
-    playerX = 156;
-    playerY = 113;
-    dir = 1;
+   // playerX = 156;
+   // playerY = 113;
+   // dir = 1;
+    gfx_SetDrawBuffer();
+    drawRoom();
 
     gfx_GetSprite(background, playerX, playerY);
     DrawPlayer();
 
     gfx_BlitBuffer();
 
-        while (!kb_IsDown(kb_KeyClear)) {
-            kb_Scan();
-             if kb_IsDown(kb_KeyUp) {
-                   dir = 2;
-                   playerY--;
-                   DrawPlayer();
-             }
-             if kb_IsDown(kb_KeyDown) {
-                   dir = 1;
-                   playerY++;
-                   DrawPlayer();
-             }
-             if kb_IsDown(kb_KeyLeft) {
-                  dir = 3;
-                  playerX--;
-                  DrawPlayer();
-             }
-             if kb_IsDown(kb_KeyRight) {
-                 dir = 4;
-                 playerX++;
-                 DrawPlayer();
-             }
+    while (!kb_IsDown(kb_KeyClear)) {
+        kb_Scan();
+        if kb_IsDown(kb_KeyUp) {
+            dir = 2;
+            playerY--;
+            DrawPlayer();
+        }
+        if kb_IsDown(kb_KeyDown) {
+            dir = 1;
+            playerY++;
+            DrawPlayer();
+        }
+        if kb_IsDown(kb_KeyLeft) {
+            dir = 3;
+            playerX--;
+            DrawPlayer();
+        }
+        if kb_IsDown(kb_KeyRight) {
+            dir = 4;
+            playerX++;
+            DrawPlayer();
+        }
+
+
+        if (kb_IsDown(kb_Key4) && roomX > 1) {
+            redraw = 1;
+            delay(100);
+            roomX--;
+            room -= 20;
+            xa -= 20;
+        }
+        if (kb_IsDown(kb_Key6) && roomX < 14) {
+            redraw = 1;
+            delay(100);
+            roomX++;
+            room += 20;
+            xa += 20;
+        }
+        if (kb_IsDown(kb_Key8) && roomY > 1) {
+            redraw = 1;
+            delay(100);
+            roomY--;
+            room -= 4200;
+            xa -= 4200;
+        }
+        if (kb_IsDown(kb_Key2) && roomY < 14) {
+            redraw = 1;
+            delay(100);
+            roomY++;
+            room += 4200;
+            xa += 4200;
+        }
+
+
+
+
+        for (x = 0; x < health; x++) {
+            gfx_ScaledTransparentSprite_NoClip(heart, 200 + (x * 13), 222, 2, 2);
+        }
+
+        if kb_IsDown(kb_KeyStat) {
+   
+                gfx_SetColor(21);
+                for (xa = 1; xa < 30; xa++) {
+                    if (xa < 18) gfx_FillRectangle(0, 0, 320, xa);
+                    gfx_FillRectangle(0, 241-xa, 320, xa);
+                    for (xb = 0; xb < 30; xb++) {
+                        if (!kb_IsDown(kb_KeyStat)) drawRoom();
+                    }
+                    gfx_BlitBuffer();
+                }
+                gfx_PrintStringXY("Objective: None", 2, 2);
+                //inventory hotbar
+                gfx_Sprite_NoClip(inventory_box, 117 - 25, 213);
+                gfx_Sprite_NoClip(inventory_box, 117, 213);
+                gfx_Sprite_NoClip(inventory_box, 117 + 25, 213);
+                gfx_Sprite_NoClip(inventory_box, 117 + 50, 213);
+                gfx_Sprite_NoClip(inventory_box, 117 + 75, 213);
+                for (x = 0; x < health; x++) {
+                    gfx_ScaledTransparentSprite_NoClip(heart, 200 + (x * 13), 194, 2, 2);
+                }
+                gfx_BlitBuffer();
+                DrawPlayer();
+                while (kb_IsDown(kb_KeyStat)){
+                    kb_Scan();
+                };
+                for (xa = 1; xa < 30; xa++) {
+                    drawRoom();
+                    kb_Scan();
+                    if kb_IsDown(kb_KeyUp) {
+                        dir = 2;
+                        playerY -= 2;
+                        DrawPlayer();
+                    }
+                    if kb_IsDown(kb_KeyDown) {
+                        dir = 1;
+                        playerY += 2;
+                        DrawPlayer();
+                    }
+                    if kb_IsDown(kb_KeyLeft) {
+                        dir = 3;
+                        playerX -= 2;
+                        DrawPlayer();
+                    }
+                    if kb_IsDown(kb_KeyRight) {
+                        dir = 4;
+                        playerX += 2;
+                        DrawPlayer();
+                    }
+                    DrawPlayer();
+                    if (xa < 18) gfx_FillRectangle(0, 0, 320, 19 - xa);
+                    gfx_FillRectangle(0, 240 - (30 - xa), 320, 30 - xa);
+                    for (x = 0; x < health; x++) {
+                        gfx_ScaledTransparentSprite_NoClip(heart, 200 + (x * 13), 193 + xa, 2, 2);
+                    }
+                    gfx_BlitBuffer();
+                }
+                drawRoom();
+                DrawPlayer();
+        }
+
 
              gfx_BlitBuffer();
 
         }
 
-        gamedata[0] = health;
-        gamedata[1] = room;
-        gamedata[2] = playerX;
-        gamedata[3] = playerY;
-        gamedata[4] = dir;
+        saveData();
+        
+
+    }
+
+    void saveData(void) {
+        
+        delay(100);
+            gamedata[0] = health;
+            gamedata[1] = room;
+            gamedata[2] = playerX;
+            gamedata[3] = playerY;
+            gamedata[4] = dir;
+            gamedata[5] = roomX;
+            gamedata[6] = roomY;
         ti_CloseAll();
         appvar = ti_Open("SrvCEss", "w");
         ti_Write(gamedata, sizeof(gamedata), 1, appvar);
         ti_CloseAll();
 
     }
+
 
 void DrawPlayer(void) {
 
@@ -253,12 +372,9 @@ void run_intro(void) {
             ti_CloseAll();
             appvar = ti_Open("SrvMap00", "r");
             ti_Read(wholeMap, ti_GetSize(appvar), 1, appvar);
-            room = sizeof(wholeMap) / 300;
 
             ti_CloseAll();
-            for (x = 0; x < sizeof(wholeMap); x++) {
-                screenMap[x] = wholeMap[x];
-            }
+            LoadMapData();
             gfx_SetColor(255);
             drawRoom();
         }
@@ -266,21 +382,24 @@ void run_intro(void) {
         ti_CloseAll();
         appvar = ti_Open("SrvCEss", "r");
 
-        if (!appvar) {
-            //gamedata = {player health, current room player is in, playerX, playerY, player direction, inventory slot 1, inv. 2, inv. 3, inv 4, inv5, objective #, chicken count, deer count, elephant count, lion count, tiger count, hippo count, gorilla count, monkey count, rhino count, scorpion count, python count, lion king hp, scorpion queen hp, emperor kong hp, Fred’s hp};
-            //gamedata size is 26. There are 11 animals (4 bosses).
-            gamedata[0] = 9;
-            gamedata[1] = 1;
-            gamedata[2] = 156;
-            gamedata[3] = 113;
-            gamedata[4] = 1;
+        if (appvar) {
+            appvar = ti_Open("SrvCEss", "r");
+            ti_Read(gamedata, 28, 1, appvar);
+            health = gamedata[0];
+            room = gamedata[1];
+            roomX = gamedata[2];
+            roomY = gamedata[3];
+            playerX = gamedata[4];
+            playerY = gamedata[5];
+            dir = gamedata[6];
+            draw_splash();
+        }
 
-            health = 9;
-            room = 1;
-            playerX = 156;
-            playerY = 113;
-            dir = 1;
-            
+        if (!appvar) {
+            //gamedata = {player health, current room player is in, playerX, playerY, player direction, roomX value, roomY value, inventory slot 1, inv. 2, inv. 3, inv 4, inv5, objective #, chicken count, deer count, elephant count, lion count, tiger count, hippo count, gorilla count, monkey count, rhino count, scorpion count, python count, lion king hp, scorpion queen hp, emperor kong hp, Fred’s hp};
+            //gamedata size is 28. There are 11 animals (4 bosses).
+            uint16_t gamedata[28] = { 9, 1, 156, 113, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
+
             ti_CloseAll();
             appvar = ti_Open("SrvCEss", "w");
             ti_Write(gamedata, sizeof(gamedata), 1, appvar);
@@ -337,28 +456,22 @@ void run_intro(void) {
             gfx_PrintStringXY("And so the saga begins...", 24, 195);
             while (!os_GetCSC());
 
+            health = 9;
+            room = 1;
+            roomX = 1;
+            roomY = 1;
+            playerX = 156;
+            playerY = 113;
+            dir = 1;
+
+            ti_CloseAll();
             draw_splash();
 
         }
 
 
-        if (appvar) {
-            char gamedata[26];
-            ti_CloseAll();
-            appvar = ti_Open("SrvCEss", "r");
-            ti_Read(gamedata, ti_GetSize(appvar), 1, appvar);
-            ti_CloseAll();
-            health = gamedata[0];
-            room = gamedata[1];
-            playerX = gamedata[2];
-            playerY = gamedata[3];
-            dir = gamedata[4];
 
-            draw_splash();
-        }
-
-
-}
+    }
 
 
 /* Draw text on the homescreen at the given X/Y cursor location */
