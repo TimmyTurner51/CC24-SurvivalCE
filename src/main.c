@@ -49,7 +49,9 @@
     static char screenMap[20 * 15];
     static char wholeMap[(20 * 14) * (15 * 14)];
     static gfx_sprite_t* sprites[12] = { dirt, grass, stone, wood, wood2, water, lava, netherrack, fireball, traptile1, traptile2, sailcloth };
-    static uint8_t gamedata[28] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+    static uint24_t gamedata[10] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+    //static uint8_t gamedata[28] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+
 
     //CREDITS: (required for CC24, it's the right thing to do)
     //Map Engine by TimmyTurner62 at cemetech.net. Thanks to Michael0x18 for constant help with code.
@@ -125,7 +127,23 @@ void drawRoom(void) {
 
 
 void draw_splash(void) {
- 
+
+
+    ti_CloseAll();
+    appvar = ti_Open("SrvCEss", "r");
+
+    if (appvar) {
+        ti_Read(gamedata, ti_GetSize(appvar), 1, appvar);
+        health = gamedata[0];
+        room = gamedata[1];
+        roomX = gamedata[2];
+        roomY = gamedata[3];
+        playerX = gamedata[4];
+        playerY = gamedata[5];
+        dir = gamedata[6];
+    }
+
+
     OldX = playerX;
     OldY = playerY;
 
@@ -204,13 +222,15 @@ void draw_splash(void) {
    
                 gfx_SetColor(21);
                 for (xa = 1; xa < 30; xa++) {
+                    drawRoom();
+                    DrawPlayer();
                     if (xa < 18) gfx_FillRectangle(0, 0, 320, xa);
                     gfx_FillRectangle(0, 241-xa, 320, xa);
                     for (xb = 0; xb < 30; xb++) {
                         if (!kb_IsDown(kb_KeyStat)) drawRoom();
                     } 
                     for (x = 0; x < health; x++) {
-                        gfx_ScaledTransparentSprite_NoClip(heart, 200 + (x * 13), 194 - xa, 2, 2);
+                        gfx_ScaledTransparentSprite_NoClip(heart, 200 + (x * 13), 222 - xa, 2, 2);
                     }
                     gfx_BlitBuffer();
                 }
@@ -360,6 +380,7 @@ void run_intro(void) {
 
     void play(void) {
 
+        uint24_t gamedata[10] = { 9, 1, 1, 1, 156, 113, 1, 0, 0, 0 };
         //Check for all required appvars...
         ti_CloseAll();
         appvar = ti_Open("SrvMap00", "r");
@@ -465,7 +486,7 @@ void run_intro(void) {
             playerX = 156;
             playerY = 113;
             dir = 1;
-
+            
             ti_CloseAll();
             draw_splash();
 
