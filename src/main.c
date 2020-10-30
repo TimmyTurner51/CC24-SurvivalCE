@@ -208,6 +208,9 @@ void draw_splash(void) {
                     gfx_FillRectangle(0, 241-xa, 320, xa);
                     for (xb = 0; xb < 30; xb++) {
                         if (!kb_IsDown(kb_KeyStat)) drawRoom();
+                    } 
+                    for (x = 0; x < health; x++) {
+                        gfx_ScaledTransparentSprite_NoClip(heart, 200 + (x * 13), 194 - xa, 2, 2);
                     }
                     gfx_BlitBuffer();
                 }
@@ -383,8 +386,7 @@ void run_intro(void) {
         appvar = ti_Open("SrvCEss", "r");
 
         if (appvar) {
-            appvar = ti_Open("SrvCEss", "r");
-            ti_Read(gamedata, 28, 1, appvar);
+            ti_Read(gamedata, ti_GetSize(appvar), 1, appvar);
             health = gamedata[0];
             room = gamedata[1];
             roomX = gamedata[2];
