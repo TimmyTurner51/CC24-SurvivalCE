@@ -46,14 +46,15 @@
     static uint24_t roomY;
     static uint24_t room;
     static uint24_t objectiveNum;
+    static uint24_t chapterNum;
     static ti_var_t appvar;
     static char screenMap[20 * 15];
     static char wholeMap[(20 * 14) * (15 * 14)];
-    static gfx_sprite_t* sprites[12] = { dirt, grass, stone, wood, wood2, water, lava, netherrack, fireball, traptile1, traptile2, sailcloth };
+    static gfx_sprite_t* sprites[14] = { dirt, grass, stone, wood, wood2, water, lava, netherrack, fireball, traptile1, traptile2, sailcloth, door, wall_brick };
     //gamedata = {player health, current room player is in, roomX, roomY, playerX, playerY, player dir, inventory slot 1, inv. 2, inv. 3, inv 4, inv5, objective #, chicken count, deer count, elephant count, lion count, tiger count, hippo count, gorilla count, monkey count, rhino count, scorpion count, python count, lion king hp, scorpion queen hp, emperor kong hp, Fred’s hp};
     //gamedata size is 28. There are 11 animals (4 bosses).
     static uint24_t gamedata[28] = { 9, 1, 1, 1, 156, 113, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
-    static char* stringarray[3] = { "objective 1", "objective 2","objective 3" };
+    static char* objectiveTitles[3] = { "Go to the Weapons Center", "objective 2","objective 3" };
 
     //CREDITS: (required for CC24, it's the right thing to do)
     //Map Engine by TimmyTurner62 at cemetech.net. Thanks to Michael0x18 for constant help with code.
@@ -169,12 +170,16 @@ void draw_splash(void) {
             for (playerX = 0; playerX < 304; playerX++) {
                 DrawPlayer();
                 if (!(playerX % 16)) {
-                    room -= 1;
-                    xa -= 1;
+                    room--;
+                    xa--;
                     drawRoom();
                 }
                 gfx_BlitBuffer();
             }
+            room--;
+            xa--;
+            drawRoom();
+            DrawPlayer();
             roomX--;
         }
         if (playerX > 304 && roomX < 14) {
@@ -182,12 +187,16 @@ void draw_splash(void) {
             for (playerX = 304; playerX > 1; playerX--) {
                 DrawPlayer();
                 if (!(playerX % 16)) {
-                    room += 1;
-                    xa += 1; 
+                    room++;
+                    xa++; 
                     drawRoom();
                 }
                 gfx_BlitBuffer();
             }
+            room++;
+            xa++;
+            drawRoom();
+            DrawPlayer();
             roomX++;
         }
         if (playerY < 1 && roomY > 1) {
@@ -201,6 +210,10 @@ void draw_splash(void) {
                 }
                 gfx_BlitBuffer();
             }
+            room -= 20 * 14;
+            xa -= 20 * 14;
+            drawRoom();
+            DrawPlayer();
             roomY--;
         }
         if (playerY > 224 && roomY < 14) {
@@ -214,6 +227,10 @@ void draw_splash(void) {
                 }
                 gfx_BlitBuffer();
             }
+            room += 20 * 14;
+            xa += 20 * 14;
+            drawRoom();
+            DrawPlayer();
             roomY++;
         }
 
@@ -231,6 +248,7 @@ void draw_splash(void) {
                     drawRoom();
                     DrawPlayer();
                     if (xa < 18) gfx_FillRectangle(0, 0, 320, xa);
+                    if (xa > 17) gfx_FillRectangle(0, 0, 320, 18);          //Need this line! Otherwise, the rectangle won't show when we redraw the room (that makes it smooth)!!!
                     gfx_FillRectangle(0, 241-xa, 320, xa);
                     for (xb = 0; xb < 30; xb++) {
                         if (!kb_IsDown(kb_KeyStat)) drawRoom();
@@ -240,7 +258,9 @@ void draw_splash(void) {
                     }
                     gfx_BlitBuffer();
                 }
-                gfx_PrintStringXY("Objective: None", 2, 2);
+                gfx_PrintStringXY("Objective:", 4, 4);
+                gfx_PrintStringXY(objectiveTitles[objectiveNum], 82, 4);
+                
                 //inventory hotbar
                 gfx_Sprite_NoClip(inventory_box, 117 - 25, 213);
                 gfx_Sprite_NoClip(inventory_box, 117, 213);
@@ -389,15 +409,19 @@ void play(void) {
                     gfx_Sprite_NoClip(grass, x * 16, y * 16);
                 }
             }
+            delay(100);
             gfx_SetColor(255);
             gfx_FillRectangle(50, 100, 220, 40);
             gfx_SetTextScale(2, 2);
             gfx_PrintStringXY("Chapter ", 94, 112);
             gfx_SetTextXY(214, 112);
-            gfx_PrintInt((objectiveNum % 5) + 1, 1);
-            delay(100);
-            while (!os_GetCSC());
+            chapterNum = (objectiveNum % 5) + 1;
+            gfx_PrintInt(chapterNum, 1);
             gfx_SetTextScale(1, 1);
+            gfx_FillRectangle(50, 180, 220, 40);
+            gfx_PrintStringXY("Objective:", 54, 184);
+            gfx_PrintStringXY(objectiveTitles[objectiveNum], 54, 194);
+            while (!os_GetCSC());
 
         }
 
