@@ -1,3 +1,4 @@
+
 ////////////////////////////////////////
 // SurvivalCE Version DEV_0.22
 // Author: Michael0x18 and TimmyTurner62
@@ -16,7 +17,6 @@
 #include <graphx.h>
 
 #include <keypadc.h>
-#include <keypadc.h>
 
 /* Standard headers */
 #include <math.h>
@@ -28,30 +28,30 @@
 #include "gfx/gfx.h"
 
 
-    static uint16_t x;
-    static uint16_t y;
-    static uint16_t OldX;
-    static uint16_t OldY;
-    static uint16_t health;
-    static uint16_t startX;
-    static uint16_t dir;
-    static uint16_t redraw;
-    static uint16_t i;
+    static uint24_t x;
+    static uint24_t y;
+    static uint24_t OldX;
+    static uint24_t OldY;
+    static uint24_t health;
+    static uint24_t startX;
+    static uint24_t dir;
+    static uint24_t redraw;
+    static uint24_t i;
     static uint16_t option;
-    static uint16_t playerX;
-    static uint16_t playerY;
-    static uint16_t xa;
-    static uint16_t xb;
-    static uint16_t roomX;
-    static uint16_t roomY;
-    static uint16_t room;
+    static uint24_t playerX;
+    static uint24_t playerY;
+    static uint24_t xa;
+    static uint24_t xb;
+    static uint24_t roomX;
+    static uint24_t roomY;
+    static uint24_t room;
     static ti_var_t appvar;
     static char screenMap[20 * 15];
     static char wholeMap[(20 * 14) * (15 * 14)];
     static gfx_sprite_t* sprites[12] = { dirt, grass, stone, wood, wood2, water, lava, netherrack, fireball, traptile1, traptile2, sailcloth };
-    static uint24_t gamedata[10] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-    //static uint8_t gamedata[28] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-
+    //gamedata = {player health, current room player is in, roomX, roomY, player direction, playerX, playerY, inventory slot 1, inv. 2, inv. 3, inv 4, inv5, objective #, chicken count, deer count, elephant count, lion count, tiger count, hippo count, gorilla count, monkey count, rhino count, scorpion count, python count, lion king hp, scorpion queen hp, emperor kong hp, Fred’s hp};
+    //gamedata size is 28. There are 11 animals (4 bosses).
+    static uint24_t gamedata[28] = { 9, 1, 1, 1, 156, 113, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
 
     //CREDITS: (required for CC24, it's the right thing to do)
     //Map Engine by TimmyTurner62 at cemetech.net. Thanks to Michael0x18 for constant help with code.
@@ -74,7 +74,6 @@
     void quit(void);
     void DrawPlayer(void);
     void LoadMapData(void);
-    void saveData(void);
        
         gfx_TempSprite(background, 16, 16);
 
@@ -114,13 +113,13 @@ void LoadMapData(void) {
 void drawRoom(void) {
 
     redraw = 0;
-    i = room;
+    i = room - 1;
     for (y = 0; y < 15; y++) {
         for (x = 0; x < 20; x++) {
-                if ((screenMap[i] > -1))
-                gfx_Sprite(sprites[screenMap[i]], x * 16, y * 16);
+                gfx_Sprite(sprites[wholeMap[i]], x * 16, y * 16);
         i++;
         }
+        i += 20 * 13;
     }
 
 }
@@ -147,9 +146,6 @@ void draw_splash(void) {
     OldX = playerX;
     OldY = playerY;
 
-   // playerX = 156;
-   // playerY = 113;
-   // dir = 1;
     gfx_SetDrawBuffer();
     drawRoom();
 
@@ -182,33 +178,57 @@ void draw_splash(void) {
         }
 
 
-        if (kb_IsDown(kb_Key4) && roomX > 1) {
-            redraw = 1;
-            delay(100);
+        if (playerX < 1 && roomX > 1) {
+        redraw = 1;
+            for (playerX = 0; playerX < 304; playerX++) {
+                DrawPlayer();
+                if (!(playerX % 16)) {
+                    room -= 1;
+                    xa -= 1;
+                    drawRoom();
+                }
+                gfx_BlitBuffer();
+            }
             roomX--;
-            room -= 20;
-            xa -= 20;
         }
-        if (kb_IsDown(kb_Key6) && roomX < 14) {
+        if (playerX > 304 && roomX < 14) {
             redraw = 1;
-            delay(100);
+            for (playerX = 304; playerX > 1; playerX--) {
+                DrawPlayer();
+                if (!(playerX % 16)) {
+                    room += 1;
+                    xa += 1; 
+                    drawRoom();
+                }
+                gfx_BlitBuffer();
+            }
             roomX++;
-            room += 20;
-            xa += 20;
         }
-        if (kb_IsDown(kb_Key8) && roomY > 1) {
+        if (playerY < 1 && roomY > 1) {
             redraw = 1;
-            delay(100);
+            for (playerY = 0; playerY < 224; playerY++) {
+                DrawPlayer();
+                if (!(playerY % 16)) {
+                    room -= 20*14;
+                    xa -= 20*14;
+                    drawRoom();
+                }
+                gfx_BlitBuffer();
+            }
             roomY--;
-            room -= 4200;
-            xa -= 4200;
         }
-        if (kb_IsDown(kb_Key2) && roomY < 14) {
+        if (playerY > 224 && roomY < 14) {
             redraw = 1;
-            delay(100);
+            for (playerY = 224; playerY > 1; playerY--) {
+                DrawPlayer();
+                if (!(playerY % 16)) {
+                    room += 20*14;
+                    xa += 20*14;
+                    drawRoom();
+                }
+                gfx_BlitBuffer();
+            }
             roomY++;
-            room += 4200;
-            xa += 4200;
         }
 
 
@@ -289,25 +309,18 @@ void draw_splash(void) {
 
         }
 
-        saveData();
-        
-
-    }
-
-    void saveData(void) {
-        
-        delay(100);
-            gamedata[0] = health;
-            gamedata[1] = room;
-            gamedata[2] = playerX;
-            gamedata[3] = playerY;
-            gamedata[4] = dir;
-            gamedata[5] = roomX;
-            gamedata[6] = roomY;
+        gamedata[0] = health;
+        gamedata[1] = room;
+        gamedata[2] = roomX;
+        gamedata[3] = roomY;
+        gamedata[4] = playerX;
+        gamedata[5] = playerY;
+        gamedata[6] = dir;
         ti_CloseAll();
         appvar = ti_Open("SrvCEss", "w");
         ti_Write(gamedata, sizeof(gamedata), 1, appvar);
         ti_CloseAll();
+        
 
     }
 
@@ -379,8 +392,7 @@ void run_intro(void) {
 }
 
     void play(void) {
-
-        uint24_t gamedata[10] = { 9, 1, 1, 1, 156, 113, 1, 0, 0, 0 };
+        //Try to fix a save/load gamedata bug, or problem, something...
         //Check for all required appvars...
         ti_CloseAll();
         appvar = ti_Open("SrvMap00", "r");
@@ -389,10 +401,8 @@ void run_intro(void) {
            
             /* error screen goes here, saying the Map file is missing */
 
-        }
-
-
-        if (appvar) {
+            ti_CloseAll();
+        }else{
             ti_CloseAll();
             appvar = ti_Open("SrvMap00", "r");
             ti_Read(wholeMap, ti_GetSize(appvar), 1, appvar);
@@ -403,32 +413,18 @@ void run_intro(void) {
             drawRoom();
         }
 
-        ti_CloseAll();
-        appvar = ti_Open("SrvCEss", "r");
 
-        if (appvar) {
-            ti_Read(gamedata, ti_GetSize(appvar), 1, appvar);
-            health = gamedata[0];
-            room = gamedata[1];
-            roomX = gamedata[2];
-            roomY = gamedata[3];
-            playerX = gamedata[4];
-            playerY = gamedata[5];
-            dir = gamedata[6];
-            draw_splash();
-        }
+            ti_CloseAll();
+            appvar = ti_Open("SrvCEss", "r");
 
-        if (!appvar) {
-            //gamedata = {player health, current room player is in, playerX, playerY, player direction, roomX value, roomY value, inventory slot 1, inv. 2, inv. 3, inv 4, inv5, objective #, chicken count, deer count, elephant count, lion count, tiger count, hippo count, gorilla count, monkey count, rhino count, scorpion count, python count, lion king hp, scorpion queen hp, emperor kong hp, Fred’s hp};
-            //gamedata size is 28. There are 11 animals (4 bosses).
-            uint16_t gamedata[28] = { 9, 1, 156, 113, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
+
+            if (!appvar) {
 
             ti_CloseAll();
             appvar = ti_Open("SrvCEss", "w");
             ti_Write(gamedata, sizeof(gamedata), 1, appvar);
             ti_SetArchiveStatus(1, appvar);
             ti_CloseAll();
-
             for (x = 0; x < 20; x++) {
                 for (y = 0; y < 15; y++) {
                     gfx_Sprite_NoClip(wood, x * 16, y * 16);
@@ -479,18 +475,30 @@ void run_intro(void) {
             gfx_PrintStringXY("And so the saga begins...", 24, 195);
             while (!os_GetCSC());
 
-            health = 9;
-            room = 1;
-            roomX = 1;
-            roomY = 1;
-            playerX = 156;
-            playerY = 113;
-            dir = 1;
-            
-            ti_CloseAll();
+            health = gamedata[0];
+            room = gamedata[1];
+            roomX = gamedata[2];
+            roomY = gamedata[3];
+            playerX = gamedata[4];
+            playerY = gamedata[5];
+            dir = gamedata[6];
             draw_splash();
 
-        }
+            } else {
+
+                ti_Read(gamedata, ti_GetSize(appvar), 1, appvar);
+                health = gamedata[0];
+                room = gamedata[1];
+                roomX = gamedata[2];
+                roomY = gamedata[3];
+                playerX = gamedata[4];
+                playerY = gamedata[5];
+                dir = gamedata[6];
+
+                ti_CloseAll();
+                draw_splash();
+
+            }
 
 
 
@@ -514,7 +522,7 @@ void help(void) {
 
 void input(void) {
     const char* chars = "\0\0\0\0\0\0\0\0\0\0\"WRMH\0\0?[VQLG\0\0:ZUPKFC\0 YTOJEB\0\0XSNIDA\0\0\0\0\0\0\0\0";
-    uint8_t key, i = 0;
+    uint24_t key, i = 0;
     char buffer[50];
     gfx_Begin();
     while ((key = os_GetCSC()) != sk_Enter) {
