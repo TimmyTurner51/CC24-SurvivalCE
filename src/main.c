@@ -27,7 +27,7 @@
 
 #include "gfx/gfx.h"
 
-
+    //I know, so many static vars... truth is, they're used sometimes A LOT by pretty much every function here!...
     static uint24_t x;
     static uint24_t y;
     static uint24_t OldX;
@@ -45,13 +45,15 @@
     static uint24_t roomX;
     static uint24_t roomY;
     static uint24_t room;
+    static uint24_t objectiveNum;
     static ti_var_t appvar;
     static char screenMap[20 * 15];
     static char wholeMap[(20 * 14) * (15 * 14)];
     static gfx_sprite_t* sprites[12] = { dirt, grass, stone, wood, wood2, water, lava, netherrack, fireball, traptile1, traptile2, sailcloth };
-    //gamedata = {player health, current room player is in, roomX, roomY, player direction, playerX, playerY, inventory slot 1, inv. 2, inv. 3, inv 4, inv5, objective #, chicken count, deer count, elephant count, lion count, tiger count, hippo count, gorilla count, monkey count, rhino count, scorpion count, python count, lion king hp, scorpion queen hp, emperor kong hp, Fred’s hp};
+    //gamedata = {player health, current room player is in, roomX, roomY, playerX, playerY, player dir, inventory slot 1, inv. 2, inv. 3, inv 4, inv5, objective #, chicken count, deer count, elephant count, lion count, tiger count, hippo count, gorilla count, monkey count, rhino count, scorpion count, python count, lion king hp, scorpion queen hp, emperor kong hp, Fred’s hp};
     //gamedata size is 28. There are 11 animals (4 bosses).
     static uint24_t gamedata[28] = { 9, 1, 1, 1, 156, 113, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
+    static char* stringarray[3] = { "objective 1", "objective 2","objective 3" };
 
     //CREDITS: (required for CC24, it's the right thing to do)
     //Map Engine by TimmyTurner62 at cemetech.net. Thanks to Michael0x18 for constant help with code.
@@ -126,22 +128,6 @@ void drawRoom(void) {
 
 
 void draw_splash(void) {
-
-
-    ti_CloseAll();
-    appvar = ti_Open("SrvCEss", "r");
-
-    if (appvar) {
-        ti_Read(gamedata, ti_GetSize(appvar), 1, appvar);
-        health = gamedata[0];
-        room = gamedata[1];
-        roomX = gamedata[2];
-        roomY = gamedata[3];
-        playerX = gamedata[4];
-        playerY = gamedata[5];
-        dir = gamedata[6];
-    }
-
 
     OldX = playerX;
     OldY = playerY;
@@ -316,6 +302,7 @@ void draw_splash(void) {
         gamedata[4] = playerX;
         gamedata[5] = playerY;
         gamedata[6] = dir;
+        gamedata[12] = objectiveNum;
         ti_CloseAll();
         appvar = ti_Open("SrvCEss", "w");
         ti_Write(gamedata, sizeof(gamedata), 1, appvar);
@@ -391,8 +378,29 @@ void run_intro(void) {
     return;
 }
 
-    void play(void) {
-        //Try to fix a save/load gamedata bug, or problem, something...
+void play(void) {
+
+
+        if (!(objectiveNum % 5)) {
+            
+
+            for (x = 0; x < 20; x++) {
+                for (y = 0; y < 15; y++) {
+                    gfx_Sprite_NoClip(grass, x * 16, y * 16);
+                }
+            }
+            gfx_SetColor(255);
+            gfx_FillRectangle(50, 100, 220, 40);
+            gfx_SetTextScale(2, 2);
+            gfx_PrintStringXY("Chapter ", 94, 112);
+            gfx_SetTextXY(214, 112);
+            gfx_PrintInt((objectiveNum % 5) + 1, 1);
+            delay(100);
+            while (!os_GetCSC());
+            gfx_SetTextScale(1, 1);
+
+        }
+
         //Check for all required appvars...
         ti_CloseAll();
         appvar = ti_Open("SrvMap00", "r");
@@ -409,7 +417,6 @@ void run_intro(void) {
 
             ti_CloseAll();
             LoadMapData();
-            gfx_SetColor(255);
             drawRoom();
         }
 
@@ -494,6 +501,7 @@ void run_intro(void) {
                 playerX = gamedata[4];
                 playerY = gamedata[5];
                 dir = gamedata[6];
+                objectiveNum = gamedata[12];
 
                 ti_CloseAll();
                 draw_splash();
@@ -502,7 +510,7 @@ void run_intro(void) {
 
 
 
-    }
+}
 
 
 /* Draw text on the homescreen at the given X/Y cursor location */
