@@ -6,10 +6,10 @@ libs     D1A9F9 D1AA88            8Fh
 startup  D1AA88 D1AAC7            3Fh
 cleanup  D1AAC7 D1AADB            14h
 exit     D1AADB D1AAE1             6h
-code     D1AAE1 D1BF52          1471h
-data     D1BF52 D1D7D9          1887h
-strsect  D1D7D9 D1DACF           2F6h
-text     D1DACF D1DACF             0h
+code     D1AAE1 D1BFCB          14EAh
+data     D1BFCB D1D85B          1890h
+strsect  D1D85B D1DB77           31Ch
+text     D1DB77 D1DB77             0h
 bss      D031F6 D1190B D13FD6   E715h
 header   D1A87F D1A882             3h
 
@@ -156,8 +156,11 @@ _os_EnableHomeTextBuffer            = D1AB3C
 __frameset0                         = D1AB4E
 __scmpzero                          = 000204
 __frameset                          = D1AB59
+_strlen                             = 0000D4
 __imul_b                            = 000158
 __imul_b                            = 000150
+__ishru_b                           = 000184
+__ishru_b                           = 000188
 __stoiu                             = 000264
 __iremu                             = 000170
 __icmpzero                          = 000138
@@ -171,39 +174,39 @@ _exit                               = D1AADD
 __exit                              = D1AAB6
 __exitsp                            = D1AAB6
 __errsp                             = D1AAB6
-_dirt_data                          = D1BF74
-_door_data                          = D1C076
-_fireball_data                      = D1C178
-_grass_data                         = D1C27A
-_heart_data                         = D1C37C
-_inventory_box_data                 = D1C3BE
-_lava_data                          = D1C631
-_mypalette                          = D1C733
-_netherrack_data                    = D1C933
-_player_dirB_1_data                 = D1CA35
-_player_dirF_1_data                 = D1CB37
-_player_dirL_1_data                 = D1CC39
-_player_dirR_1_data                 = D1CD3B
-_sailcloth_data                     = D1CE3D
-_stone_data                         = D1CF3F
-_traptile1_data                     = D1D041
-_traptile2_data                     = D1D143
-_wall_brick_data                    = D1D245
-_water_data                         = D1D347
-_wood_data                          = D1D449
-_wood2_data                         = D1D54B
-_input                              = D1BEE0
-_help                               = D1BEDF
-_printText                          = D1BEBD
-_play                               = D1B89F
-_run_intro                          = D1B611
-_DrawPlayer                         = D1B52E
+_dirt_data                          = D1BFED
+_door_data                          = D1C0EF
+_fireball_data                      = D1C1F1
+_grass_data                         = D1C2F3
+_heart_data                         = D1C3F5
+_inventory_box_data                 = D1C437
+_lava_data                          = D1C6AA
+_mypalette                          = D1C7AC
+_netherrack_data                    = D1C9AC
+_player_dirB_1_data                 = D1CAAE
+_player_dirF_1_data                 = D1CBB0
+_player_dirL_1_data                 = D1CCB2
+_player_dirR_1_data                 = D1CDB4
+_sailcloth_data                     = D1CEB6
+_stone_data                         = D1CFB8
+_traptile1_data                     = D1D0BA
+_traptile2_data                     = D1D1BC
+_wall_brick_data                    = D1D2BE
+_water_data                         = D1D3C0
+_wood_data                          = D1D4C2
+_wood2_data                         = D1D5C4
+_input                              = D1BF59
+_help                               = D1BF58
+_printText                          = D1BF36
+_play                               = D1B8C9
+_run_intro                          = D1B63B
+_DrawPlayer                         = D1B558
 _draw_splash                        = D1ACE9
 _drawRoom                           = D1AC3E
 _LoadMapData                        = D1ABA8
 _main                               = D1AB67
-_background                         = D1D7D6
-_background_data                    = D1D6D4
+_background                         = D1D858
+_background_data                    = D1D756
 _ti_CloseAll                        = D1AA0D
 _ti_Open                            = D1AA11
 _ti_Write                           = D1AA15
