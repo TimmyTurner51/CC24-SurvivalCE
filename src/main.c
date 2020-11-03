@@ -1,4 +1,3 @@
-
 ////////////////////////////////////////
 // SurvivalCE Version DEV_0.22
 // Author: Michael0x18 and TimmyTurner62
@@ -55,9 +54,9 @@
     static char screenMap[20 * 15];
     static char wholeMap[(20 * 14) * (15 * 14)];
     static gfx_sprite_t* sprites[14] = { dirt, grass, stone, wood, wood2, water, lava, netherrack, fireball, traptile1, traptile2, sailcloth, door, wall_brick };
-    //gamedata = {player health, current room player is in, roomX, roomY, playerX, playerY, player dir, inventory slot 1, inv. 2, inv. 3, inv 4, inv5, objective #, chicken count, deer count, elephant count, lion count, tiger count, hippo count, gorilla count, monkey count, rhino count, scorpion count, python count, lion king hp, scorpion queen hp, emperor kong hp, Fred’s hp};
-    //gamedata size is 28. There are 11 animals (4 bosses).
-    static uint24_t gamedata[28] = { 9, 1, 1, 1, 156, 145, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
+    //gamedata = {player health, current room player is in, roomX, roomY, playerX, playerY, player dir, inventory slot 1, inv. 2, inv. 3, inv 4, inv5, objective #, player pos in map, chicken count, deer count, elephant count, lion count, tiger count, hippo count, gorilla count, monkey count, rhino count, scorpion count, python count, lion king hp, scorpion queen hp, emperor kong hp, Fred’s hp};
+    //gamedata size is 29. There are 11 animals (4 bosses).
+    static uint24_t gamedata[29] = { 9, 1, 1, 1, 156, 145, 1, 1, 1, 1, 1, 1, 1, 2810, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
     static char* objectiveTitles[3] = { "Go to the Weapons Center", "Purchase a knife","Go stab a duck" };
     static char* chapterTitles[3] = { "Hunt Training", "The adventure","Return of Fred" };
 
@@ -148,27 +147,45 @@ void draw_splash(void) {
 
     while (!kb_IsDown(kb_KeyClear)) {
         kb_Scan();
-        if kb_IsDown(kb_KeyUp) {
+
+        //trying to fix a bug with up movement changing player pos in map by -280 on new game when it's not supposed to.
+        i = 0;
+        if (kb_IsDown(kb_KeyUp) && (dir != DIR_UP)) {
+            i = 1;
             dir = DIR_UP;
-            playerY--;
-            DrawPlayer();
-        }
-        if kb_IsDown(kb_KeyDown) {
-            dir = DIR_DOWN;
-            playerY++;
-            DrawPlayer();
-        }
-        if kb_IsDown(kb_KeyLeft) {
-            dir = DIR_LEFT;
-            playerX--;
-            DrawPlayer();
-        }
-        if kb_IsDown(kb_KeyRight) {
-            dir = DIR_RIGHT;
-            playerX++;
-            DrawPlayer();
         }
 
+
+        if (i = 0) {
+            if (kb_IsDown(kb_KeyUp) && (playerY > 0) && (wholeMap[gamedata[13] - 280] != 7) && (wholeMap[gamedata[13] - 280] != 13)) {
+                dir = DIR_UP;
+                playerY--;
+                if (playerY % 16 == 0) gamedata[13] -= 280;
+                DrawPlayer();
+            }
+            if (kb_IsDown(kb_KeyDown) && (wholeMap[gamedata[13] + 280] != 7) && (wholeMap[gamedata[13] + 280] != 13)) {
+                dir = DIR_DOWN;
+                playerY++;
+                if (playerY % 16 == 0) gamedata[13] += 280;
+                DrawPlayer();
+            }
+            if (kb_IsDown(kb_KeyLeft) && (playerX > 0) && (wholeMap[gamedata[13] - 1] != 7) && (wholeMap[gamedata[13] - 1] != 13)) {
+                dir = DIR_LEFT;
+                playerX--;
+                if (playerX % 16 == 0) gamedata[13]--;
+                DrawPlayer();
+            }
+            if (kb_IsDown(kb_KeyRight) && (wholeMap[gamedata[13] + 1] != 7) && (wholeMap[gamedata[13] + 1] != 13)) {
+                dir = DIR_RIGHT;
+                playerX++;
+                if (playerX % 16 == 0) gamedata[13]++;
+                DrawPlayer();
+            }
+        }
+
+            gfx_FillRectangle(18, 18, 100, 14);
+            gfx_SetTextXY(20, 20);
+            gfx_PrintInt(gamedata[13],1);
 
         if (playerX < 1 && roomX > 1) {
         redraw = 1;
@@ -409,6 +426,8 @@ void run_intro(void) {
 
 void play(void) {
 
+        char * msgs_1[9]={"Your father was a senior member of the","prestigious Hunter's Club.","was the envy of everyone, especially","One day, your father went hunting with","was finally killed by one of the beasts","him. However, you think your uncle","could hold the title of Greatest Hunter.","title yourself...","And so the saga begins..."};
+		char * msgs_2[9]={"highly exclusive and extremely","His collection of rare pelts and trophies","your uncle Fred.","Fred and vanished. Fred said that he","he pursued, and everyone believed","actually killed your father so that he","To get revenge, you decide to pursue the"," "," "};
 
         if (!(objectiveNum % 5)) {
             
@@ -472,21 +491,21 @@ void play(void) {
                 }
             }
 			delay(300);
-			/*//This is more compact, but we need to test it.
-			char * msgs_1[9]={"Your father was a senior member of the","prestigious Hunter's Club.","was the envy of everyone, especially","One day, your father went hunting with","was finally killed by one of the beasts","him. However, you think your uncle","could hold the title of Greatest Hunter.","title yourself...","And so the saga begins..."};
-			char * msgs_2[9]={"highly exclusive and extremely","His collection of rare pelts and trophies","your uncle Fred.","Fred and vanished. Fred said that he","he pursued, and everyone believed","actually killed your father so that he","To get revenge, you decide to pursue the"," "," "};
-		 for(int8_t a_i=0; a_i<9; ++a_i){
+			//This is more compact, but we need to test it.
+			
+		 for(y = 0; y < 9; y++){
 		  	    gfx_FillRectangle(20, 190, 280, 40);
-        		    gfx_PrintStringXY(msgs_1[a_i], 24, 195);
-        		    gfx_PrintStringXY(msgs_2[a_i], 24, 210);
+        		    gfx_PrintStringXY(msgs_1[y], 24, 195);
+        		    gfx_PrintStringXY(msgs_2[y], 24, 210);
         		    /* Need to change later to wait for the [2nd] key to be pressed */
            	    while (!os_GetCSC());
-		  }*/
+		  }
+
+          /*
             delay(300);
             gfx_FillRectangle(20, 190, 280, 40);
             gfx_PrintStringXY("Your father was a senior member of the", 24, 195);
             gfx_PrintStringXY("highly exclusive and extremely", 24, 210);
-            /* Need to change later to wait for the [2nd] key to be pressed */
             while (!os_GetCSC());
 
             gfx_FillRectangle(20, 190, 280, 40);
@@ -526,7 +545,7 @@ void play(void) {
             gfx_FillRectangle(20, 190, 280, 40);
             gfx_PrintStringXY("And so the saga begins...", 24, 195);
             while (!os_GetCSC());
-
+        */
             health = gamedata[0];
             room = gamedata[1];
             roomX = gamedata[2];
