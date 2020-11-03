@@ -51,11 +51,11 @@
     static char screenMap[20 * 15];
     static char wholeMap[(20 * 14) * (15 * 14)];
     static gfx_sprite_t* sprites[14] = { dirt, grass, stone, wood, wood2, water, lava, netherrack, fireball, traptile1, traptile2, sailcloth, door, wall_brick };
-    //gamedata = {player health, current room player is in, roomX, roomY, playerX, playerY, player dir, inventory slot 1, inv. 2, inv. 3, inv 4, inv5, objective #, chicken count, deer count, elephant count, lion count, tiger count, hippo count, gorilla count, monkey count, rhino count, scorpion count, python count, lion king hp, scorpion queen hp, emperor kong hp, Fred’s hp};
+    //gamedata = {player health, current room player is in, roomX, roomY, playerX, playerY, player dir, inventory slot 1, inv. 2, inv. 3, inv 4, inv5, objective #, chicken count, deer count, elephant count, lion count, tiger count, hippo count, gorilla count, monkey count, rhino count, scorpion count, python count, lion king hp, scorpion queen hp, emperor kong hp, Fredâ€™s hp};
     //gamedata size is 28. There are 11 animals (4 bosses).
     static uint24_t gamedata[28] = { 9, 1, 1, 1, 156, 145, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
-    static char* objectiveTitles[3] = { "Go to the Weapons Center", "objective 2","objective 3" };
-    static char* chapterTitles[3] = { "Hunt Training", "objective 2","objective 3" };
+    static char* objectiveTitles[3] = { "Go to the Weapons Center", "Purchase a knife","Go stab a duck" };
+    static char* chapterTitles[3] = { "Hunt Training", "The adventure","Return of Fred" };
 
     //CREDITS: (required for CC24, it's the right thing to do)
     //Map Engine by TimmyTurner62 at cemetech.net. Thanks to Michael0x18 for constant help with code.
