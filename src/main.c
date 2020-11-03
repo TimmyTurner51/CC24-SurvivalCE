@@ -5,7 +5,6 @@
 // License: Gnu GPLv2?
 // Description: Cemetech CC24 submission.
 ////////////////////////////////////////
-
 /* Keep these headers */
 #include <stdbool.h>
 #include <stddef.h>
@@ -26,6 +25,11 @@
 
 
 #include "gfx/gfx.h"
+
+#define DIR_DOWN 1
+#define DIR_UP 2
+#define DIR_LEFT 3
+#define DIR_RIGHT 4
 
     //I know, so many static vars... truth is, they're used sometimes A LOT by pretty much every function here!...
     static uint24_t x;
@@ -145,22 +149,22 @@ void draw_splash(void) {
     while (!kb_IsDown(kb_KeyClear)) {
         kb_Scan();
         if kb_IsDown(kb_KeyUp) {
-            dir = 2;
+            dir = DIR_UP;
             playerY--;
             DrawPlayer();
         }
         if kb_IsDown(kb_KeyDown) {
-            dir = 1;
+            dir = DIR_DOWN;
             playerY++;
             DrawPlayer();
         }
         if kb_IsDown(kb_KeyLeft) {
-            dir = 3;
+            dir = DIR_LEFT;
             playerX--;
             DrawPlayer();
         }
         if kb_IsDown(kb_KeyRight) {
-            dir = 4;
+            dir = DIR_RIGHT;
             playerX++;
             DrawPlayer();
         }
@@ -213,8 +217,8 @@ void draw_splash(void) {
                     gfx_BlitBuffer();
                 }
             }
-            room -= 20 * 14;
-            xa -= 20 * 14;
+            room -= 280;
+            xa -= 280;
             drawRoom();
             DrawPlayer();
             gfx_BlitBuffer();
@@ -226,13 +230,13 @@ void draw_splash(void) {
                 if (!(playerY % 16)) {
                     drawRoom();
                     DrawPlayer();
-                    room += 20*14;
-                    xa += 20*14;
+                    room += 280;
+                    xa += 280;
                     gfx_BlitBuffer();
                 }
             }
-            room += 20 * 14;
-            xa += 20 * 14;
+            room += 280;
+            xa += 280;
             drawRoom();
             DrawPlayer();
             gfx_BlitBuffer();
@@ -284,30 +288,30 @@ void draw_splash(void) {
                     drawRoom();
                     kb_Scan();
                     if kb_IsDown(kb_KeyUp) {
-                        dir = 2;
+                        dir = DIR_UP;
                         playerY -= 2;
                         DrawPlayer();
                     }
                     if kb_IsDown(kb_KeyDown) {
-                        dir = 1;
+                        dir = DIR_DOWN;
                         playerY += 2;
                         DrawPlayer();
                     }
                     if kb_IsDown(kb_KeyLeft) {
-                        dir = 3;
+                        dir = DIR_LEFT;
                         playerX -= 2;
                         DrawPlayer();
                     }
                     if kb_IsDown(kb_KeyRight) {
-                        dir = 4;
+                        dir = DIR_RIGHT;
                         playerX += 2;
                         DrawPlayer();
                     }
                     DrawPlayer();
                     if (xa < 18) gfx_FillRectangle(0, 0, 320, 19 - xa);
-                    gfx_FillRectangle(0, 240 - (30 - xa), 320, 30 - xa);
+                    gfx_FillRectangle(0, 210 + xa, 320, 30 - xa);
                     for (x = 0; x < health; x++) {
-                        gfx_ScaledTransparentSprite_NoClip(heart, 200 + (x * 13), 193 + xa, 2, 2);
+                        gfx_ScaledTransparentSprite_NoClip(heart, 200 + x*13, 193 + xa, 2, 2);
                     }
                     gfx_BlitBuffer();
                 }
@@ -467,6 +471,17 @@ void play(void) {
                     gfx_Sprite_NoClip(wood, x * 16, y * 16);
                 }
             }
+			delay(300);
+			/*//This is more compact, but we need to test it.
+			char * msgs_1[9]={"Your father was a senior member of the","prestigious Hunter's Club.","was the envy of everyone, especially","One day, your father went hunting with","was finally killed by one of the beasts","him. However, you think your uncle","could hold the title of Greatest Hunter.","title yourself...","And so the saga begins..."};
+			char * msgs_2[9]={"highly exclusive and extremely","His collection of rare pelts and trophies","your uncle Fred.","Fred and vanished. Fred said that he","he pursued, and everyone believed","actually killed your father so that he","To get revenge, you decide to pursue the"," "," "};
+		 for(int8_t a_i=0; a_i<9; ++a_i){
+		  	    gfx_FillRectangle(20, 190, 280, 40);
+        		    gfx_PrintStringXY(msgs_1[a_i], 24, 195);
+        		    gfx_PrintStringXY(msgs_2[a_i], 24, 210);
+        		    /* Need to change later to wait for the [2nd] key to be pressed */
+           	    while (!os_GetCSC());
+		  }*/
             delay(300);
             gfx_FillRectangle(20, 190, 280, 40);
             gfx_PrintStringXY("Your father was a senior member of the", 24, 195);
