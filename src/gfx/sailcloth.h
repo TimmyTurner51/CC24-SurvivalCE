@@ -5,11 +5,11 @@
 extern "C" {
 #endif
 
-#define sailcloth_width 64
-#define sailcloth_height 64
-#define sailcloth_size 4098
+#define sailcloth_width 16
+#define sailcloth_height 16
+#define sailcloth_size 258
 #define sailcloth ((gfx_sprite_t*)sailcloth_data)
-extern unsigned char sailcloth_data[4098];
+extern unsigned char sailcloth_data[258];
 
 #ifdef __cplusplus
 }

@@ -5,11 +5,11 @@
 extern "C" {
 #endif
 
-#define wood2_width 64
-#define wood2_height 64
-#define wood2_size 4098
+#define wood2_width 16
+#define wood2_height 16
+#define wood2_size 258
 #define wood2 ((gfx_sprite_t*)wood2_data)
-extern unsigned char wood2_data[4098];
+extern unsigned char wood2_data[258];
 
 #ifdef __cplusplus
 }
