@@ -43,6 +43,7 @@
     static uint16_t option;
     static uint24_t playerX;
     static uint24_t playerY;
+    static uint24_t movable;
     static uint24_t xa;
     static uint24_t xb;
     static uint24_t roomX;
@@ -51,12 +52,11 @@
     static uint24_t objectiveNum;
     static uint24_t chapterNum;
     static ti_var_t appvar;
-    static char screenMap[20 * 15];
     static char wholeMap[(20 * 14) * (15 * 14)];
     static gfx_sprite_t* sprites[14] = { dirt, grass, stone, wood, wood2, water, lava, netherrack, fireball, traptile1, traptile2, sailcloth, door, wall_brick };
     //gamedata = {player health, current room player is in, roomX, roomY, playerX, playerY, player dir, inventory slot 1, inv. 2, inv. 3, inv 4, inv5, objective #, player pos in map, chicken count, deer count, elephant count, lion count, tiger count, hippo count, gorilla count, monkey count, rhino count, scorpion count, python count, lion king hp, scorpion queen hp, emperor kong hp, Fred’s hp};
     //gamedata size is 29. There are 11 animals (4 bosses).
-    static uint24_t gamedata[29] = { 9, 1, 1, 1, 156, 145, 1, 1, 1, 1, 1, 1, 1, 2810, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
+    static uint24_t gamedata[29] = { 9, 1, 1, 1, 160, 144, 2, 1, 1, 1, 1, 1, 1, 2530, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
     static char* objectiveTitles[3] = { "Go to the Weapons Center", "Purchase a knife","Go stab a duck" };
     static char* chapterTitles[3] = { "Hunt Training", "The adventure","Return of Fred" };
 
@@ -80,7 +80,6 @@
     void help(void);
     void quit(void);
     void DrawPlayer(void);
-    void LoadMapData(void);
        
         gfx_TempSprite(background, 16, 16);
 
@@ -102,20 +101,6 @@ void main(void){
 
 
 
-void LoadMapData(void) {
-
-    xa = 0;
-    xb = room;
-    for (y = 0; y < 15; y++) {
-        for (x = 0; x < 20; x++) {
-            screenMap[xa] = wholeMap[xb];
-            xb++;
-            xa++;
-        }
-        xb += 20 * 13;
-    }
-
-}
 
 void drawRoom(void) {
 
@@ -148,120 +133,133 @@ void draw_splash(void) {
     while (!kb_IsDown(kb_KeyClear)) {
         kb_Scan();
 
-        //trying to fix a bug with up movement changing player pos in map by -280 on new game when it's not supposed to.
-        i = 0;
-        if (kb_IsDown(kb_KeyUp) && (dir != DIR_UP)) {
-            i = 1;
-            dir = DIR_UP;
-        }
-
-
-        if (i = 0) {
-            if (kb_IsDown(kb_KeyUp) && (playerY > 0) && (wholeMap[gamedata[13] - 280] != 7) && (wholeMap[gamedata[13] - 280] != 13)) {
-                dir = DIR_UP;
-                playerY--;
-                if (playerY % 16 == 0) gamedata[13] -= 280;
-                DrawPlayer();
-            }
-            if (kb_IsDown(kb_KeyDown) && (wholeMap[gamedata[13] + 280] != 7) && (wholeMap[gamedata[13] + 280] != 13)) {
-                dir = DIR_DOWN;
-                playerY++;
-                if (playerY % 16 == 0) gamedata[13] += 280;
-                DrawPlayer();
-            }
-            if (kb_IsDown(kb_KeyLeft) && (playerX > 0) && (wholeMap[gamedata[13] - 1] != 7) && (wholeMap[gamedata[13] - 1] != 13)) {
-                dir = DIR_LEFT;
-                playerX--;
-                if (playerX % 16 == 0) gamedata[13]--;
-                DrawPlayer();
-            }
-            if (kb_IsDown(kb_KeyRight) && (wholeMap[gamedata[13] + 1] != 7) && (wholeMap[gamedata[13] + 1] != 13)) {
-                dir = DIR_RIGHT;
-                playerX++;
-                if (playerX % 16 == 0) gamedata[13]++;
-                DrawPlayer();
-            }
-        }
 
             gfx_FillRectangle(18, 18, 100, 14);
             gfx_SetTextXY(20, 20);
             gfx_PrintInt(gamedata[13],1);
 
-        if (playerX < 1 && roomX > 1) {
-        redraw = 1;
-            for (playerX = 0; playerX < 304; playerX++) {
-                if (!(playerX % 16)) {
-                    drawRoom();
-                    DrawPlayer();
-                    room--;
-                    xa--;
-                    gfx_BlitBuffer();
-                }
-            }
-            room--;
-            xa--;
-            drawRoom();
-            DrawPlayer();
-            gfx_BlitBuffer();
-            roomX--;
+
+        movable = 1;
+        
+        
+        if (kb_IsDown(kb_KeyUp) && (dir != DIR_UP)) {
+            movable = 0;
+            dir = DIR_UP;
         }
-        if (playerX > 304 && roomX < 14) {
-            redraw = 1;
-            for (playerX = 304; playerX > 1; playerX--) {
-                if (!(playerX % 16)) {
-                    drawRoom();
-                    DrawPlayer();
-                    room++;
-                    xa++;
-                    gfx_BlitBuffer();
-                }
-            }
-            room++;
-            xa++;
-            drawRoom();
-            DrawPlayer();
-            gfx_BlitBuffer();
-            roomX++;
+        if (kb_IsDown(kb_KeyDown) && (dir != DIR_DOWN)) {
+            movable = 0;
+            dir = DIR_DOWN;
         }
-        if (playerY < 1 && roomY > 1) {
-            redraw = 1;
-            for (playerY = 0; playerY < 224; playerY++) {
-                if (!(playerY % 16)) {
-                    drawRoom();
-                    DrawPlayer();
-                    room -= 20*14;
-                    xa -= 20*14;
-                    gfx_BlitBuffer();
-                }
-            }
-            room -= 280;
-            xa -= 280;
-            drawRoom();
-            DrawPlayer();
-            gfx_BlitBuffer();
-            roomY--;
+        if (kb_IsDown(kb_KeyLeft) && (dir != DIR_LEFT)) {
+            movable = 0;
+            dir = DIR_LEFT;
         }
-        if (playerY > 224 && roomY < 14) {
-            redraw = 1;
-            for (playerY = 224; playerY > 1; playerY--) {
-                if (!(playerY % 16)) {
-                    drawRoom();
-                    DrawPlayer();
-                    room += 280;
-                    xa += 280;
-                    gfx_BlitBuffer();
-                }
-            }
-            room += 280;
-            xa += 280;
-            drawRoom();
-            DrawPlayer();
-            gfx_BlitBuffer();
-            roomY++;
+        if (kb_IsDown(kb_KeyRight) && (dir != DIR_RIGHT)) {
+            movable = 0;
+            dir = DIR_RIGHT;
         }
+        
+        
+        if (movable > 0) {
+            if (kb_IsDown(kb_KeyUp) && (playerY > 0) && (wholeMap[gamedata[13] - 280] != 7) && (wholeMap[gamedata[13] - 280] != 13)) {
+                dir = DIR_UP;
+                if ((playerY % 16 == 0) && (playerY != 0)) gamedata[13] -= 280;
+                playerY--;
+                DrawPlayer();
+            }
+            if (kb_IsDown(kb_KeyDown) && (wholeMap[gamedata[13] + 280] != 7) && (wholeMap[gamedata[13] + 280] != 13)) {
+                dir = DIR_DOWN;
+                if (playerY % 16 == 0) gamedata[13] += 280;
+                playerY++;
+                DrawPlayer();
+            }
+            if (kb_IsDown(kb_KeyLeft) && (playerX > 0) && (wholeMap[gamedata[13] - 1] != 7) && (wholeMap[gamedata[13] - 1] != 13)) {
+                dir = DIR_LEFT;
+                if ((playerX % 16 == 0) && (playerX != 0)) gamedata[13]--;
+                playerX--;
+                DrawPlayer();
+            }
+            if (kb_IsDown(kb_KeyRight) && (wholeMap[gamedata[13] + 1] != 7) && (wholeMap[gamedata[13] + 1] != 13)) {
+                dir = DIR_RIGHT;
+                if (playerX % 16 == 0) gamedata[13]++;
+                playerX++;
+                DrawPlayer();
+            }
 
 
-
+            if ((playerX < 1) && (roomX > 1)) {
+            redraw = 1;
+                for (playerX = 0; playerX < 304; playerX++) {
+                    if (!(playerX % 16)) {
+                        drawRoom();
+                        DrawPlayer();
+                        room--;
+                        xa--;
+                        gfx_BlitBuffer();
+                    }
+                }
+                room--;
+                xa--;
+                drawRoom();
+                DrawPlayer();
+                gfx_BlitBuffer();
+                roomX--;
+            }
+            if ((playerX > 304) && (roomX < 14)) {
+                redraw = 1;
+                for (playerX = 304; playerX > 1; playerX--) {
+                    if (!(playerX % 16)) {
+                        drawRoom();
+                        DrawPlayer();
+                        room++;
+                        xa++;
+                        gfx_BlitBuffer();
+                    }
+                }
+                room++;
+                xa++;
+                drawRoom();
+                DrawPlayer();
+                gfx_BlitBuffer();
+                roomX++;
+            }
+            if ((playerY < 1) && (roomY > 1)) {
+                redraw = 1;
+                for (playerY = 0; playerY < 224; playerY++) {
+                    if (!(playerY % 16)) {
+                        drawRoom();
+                        DrawPlayer();
+                        room -= 20*14;
+                        xa -= 20*14;
+                        gfx_BlitBuffer();
+                    }
+                }
+                room -= 280;
+                xa -= 280;
+                drawRoom();
+                DrawPlayer();
+                gfx_BlitBuffer();
+                roomY--;
+            }
+            if ((playerY > 224) && (roomY < 14)) {
+                redraw = 1;
+                for (playerY = 224; playerY > 1; playerY--) {
+                    if (!(playerY % 16)) {
+                        drawRoom();
+                        DrawPlayer();
+                        room += 280;
+                        xa += 280;
+                        gfx_BlitBuffer();
+                    }
+                }
+                room += 280;
+                xa += 280;
+                drawRoom();
+                DrawPlayer();
+                gfx_BlitBuffer();
+                roomY++;
+            }
+        }
 
         for (x = 0; x < health; x++) {
             gfx_ScaledTransparentSprite_NoClip(heart, 200 + (x * 13), 222, 2, 2);
@@ -469,7 +467,6 @@ void play(void) {
             ti_Read(wholeMap, ti_GetSize(appvar), 1, appvar);
 
             ti_CloseAll();
-            LoadMapData();
             drawRoom();
         }
 
