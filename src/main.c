@@ -202,7 +202,7 @@ void draw_splash(void) {
                     }
                 }
                 room--;
-                xa--;
+                //xa--;
                 drawRoom();
                 DrawPlayer();
                 gfx_BlitBuffer();
@@ -220,7 +220,7 @@ void draw_splash(void) {
                     }
                 }
                 room++;
-                xa++;
+                //xa++;
                 drawRoom();
                 DrawPlayer();
                 gfx_BlitBuffer();
@@ -238,7 +238,7 @@ void draw_splash(void) {
                     }
                 }
                 room -= 280;
-                xa -= 280;
+                //xa -= 280;
                 drawRoom();
                 DrawPlayer();
                 gfx_BlitBuffer();
@@ -256,7 +256,7 @@ void draw_splash(void) {
                     }
                 }
                 room += 280;
-                xa += 280;
+                //xa += 280;
                 drawRoom();
                 DrawPlayer();
                 gfx_BlitBuffer();
@@ -509,7 +509,19 @@ void play(void) {
         		    /* Need to change later to wait for the [2nd] key to be pressed */
            	    while (!os_GetCSC());
 		  }
+          
+            gfx_SetDefaultPalette(0);
+            gfx_SetColor(0);
+                for (y = 0; y < 15; y++) {
+                    for (x = 0; x < 10; x++) {
+                        gfx_FillRectangle(x * 16, y * 16, 16, 16);
+                        gfx_FillRectangle(304 - (x * 16), 224 - (y * 16), 16, 16);
+                        gfx_BlitBuffer();
+                        delay(10);
+                    }
+                }
 
+            gfx_SetPalette(mypalette, sizeof_mypalette, 0);
             health = gamedata[0];
             room = gamedata[1];
             roomX = gamedata[2];
