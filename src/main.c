@@ -166,25 +166,25 @@ void draw_splash(void) {
         if (movable > 0) {
             if (kb_IsDown(kb_KeyUp) && (playerY > 0) && (wholeMap[gamedata[13] - 280] != 7) && (wholeMap[gamedata[13] - 280] != 13)) {
                 dir = DIR_UP;
-                if ((playerY % 16 == 0) && (playerY != 0)) gamedata[13] -= 280;
+                if ((playerY % 16 == 0) && (playerY != 0) && (playerY == OldY)) gamedata[13] -= 280;
                 playerY--;
                 DrawPlayer();
             }
             if (kb_IsDown(kb_KeyDown) && (wholeMap[gamedata[13] + 280] != 7) && (wholeMap[gamedata[13] + 280] != 13)) {
                 dir = DIR_DOWN;
-                if (playerY % 16 == 0) gamedata[13] += 280;
+                if ((playerY % 16 == 0) && (playerY == OldY)) gamedata[13] += 280;
                 playerY++;
                 DrawPlayer();
             }
             if (kb_IsDown(kb_KeyLeft) && (playerX > 0) && (wholeMap[gamedata[13] - 1] != 7) && (wholeMap[gamedata[13] - 1] != 13)) {
                 dir = DIR_LEFT;
-                if ((playerX % 16 == 0) && (playerX != 0)) gamedata[13]--;
+                if ((playerX % 16 == 0) && (playerX != 0) && (playerX == OldX)) gamedata[13]--;
                 playerX--;
                 DrawPlayer();
             }
             if (kb_IsDown(kb_KeyRight) && (wholeMap[gamedata[13] + 1] != 7) && (wholeMap[gamedata[13] + 1] != 13)) {
                 dir = DIR_RIGHT;
-                if (playerX % 16 == 0) gamedata[13]++;
+                if ((playerX % 16 == 0) && (playerX == OldX)) gamedata[13]++;
                 playerX++;
                 DrawPlayer();
             }
@@ -468,7 +468,7 @@ void play(void) {
 
             
             gfx_SetDrawBuffer();
-            for (xa = 32; xa < 180; xa++) {
+            for (xa = 32; xa < 180; xa += 2) {
                 for (x = 0; x < 20; x++) {
                     for (y = 0; y < 15; y++) {
                         gfx_Sprite_NoClip(wood, x * 16, y * 16);
