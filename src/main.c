@@ -46,6 +46,8 @@
     static uint24_t movable;
     static uint24_t xa;
     static uint24_t xb;
+    static uint24_t xc;
+    static uint24_t yc;
     static uint24_t roomX;
     static uint24_t roomY;
     static uint24_t room;
@@ -80,6 +82,7 @@
     void help(void);
     void quit(void);
     void DrawPlayer(void);
+    void dispChaptAndObj(void);
        
         gfx_TempSprite(background, 16, 16);
 
@@ -88,7 +91,7 @@ void main(void){
     //set the palette...
     gfx_SetPalette(mypalette, sizeof_mypalette, 0);
     // Always have to change transparent value any time a new sprite is added and converted :/
-    gfx_SetTransparentColor(192);
+    gfx_SetTransparentColor(99);
     gfx_SetColor(21);
     gfx_SetTextFGColor(120);
     //Go to the main menu    
@@ -372,6 +375,7 @@ void DrawPlayer(void) {
 
 void run_intro(void) {
 
+    gfx_SetDrawBuffer();
     /* main menu */
     for (x = 0; x < 20; x++) {
         for (y = 0; y < 15; y++) {
@@ -384,6 +388,7 @@ void run_intro(void) {
             gfx_Sprite(wood, OldX, OldY);
         }
     }
+    gfx_BlitBuffer();
     gfx_SetTextFGColor(110);
     redraw = 1;
     y = 140;
@@ -404,6 +409,7 @@ void run_intro(void) {
             gfx_PrintStringXY("Quit", 148, 182);
             gfx_Rectangle(60, y, 192, 16);
             gfx_Rectangle(61, y + 1, 190, 14);
+            gfx_BlitBuffer();
         }
         i = y;
         if (kb_IsDown(kb_KeyUp) && y > 140) {
@@ -423,34 +429,11 @@ void run_intro(void) {
 }
 
 void play(void) {
+        
+        char * msgs_1[9]={"Your father was a senior member of the","prestigious Hunter's Club.","was the envy of everyone, especially","One day, your father went hunting with","was finally killed by one of the","...I think my uncle actually","could hold the title of Greatest Hunter.","the title myself...","And so the saga begins..."};
+		char * msgs_2[9]={"highly exclusive and extremely","His collection of rare pelts and trophies","me, your uncle Fred.","me and vanished. I think that he","beasts he pursued...","killed my father so that he","To get revenge, I've decided to pursue"," "," "};
 
-        char * msgs_1[9]={"Your father was a senior member of the","prestigious Hunter's Club.","was the envy of everyone, especially","One day, your father went hunting with","was finally killed by one of the beasts","him. However, you think your uncle","could hold the title of Greatest Hunter.","title yourself...","And so the saga begins..."};
-		char * msgs_2[9]={"highly exclusive and extremely","His collection of rare pelts and trophies","your uncle Fred.","Fred and vanished. Fred said that he","he pursued, and everyone believed","actually killed your father so that he","To get revenge, you decide to pursue the"," "," "};
-
-        if (!(objectiveNum % 5)) {
-            
-
-            for (x = 0; x < 20; x++) {
-                for (y = 0; y < 15; y++) {
-                    gfx_Sprite_NoClip(grass, x * 16, y * 16);
-                }
-            }
-            delay(100);
-            gfx_SetColor(255);
-            gfx_FillRectangle(50, 100, 220, 50);
-            gfx_SetTextScale(2, 2);
-            gfx_PrintStringXY("Chapter ", 94, 112);
-            gfx_SetTextXY(214, 112);
-            chapterNum = (objectiveNum % 5) + 1;
-            gfx_PrintInt(chapterNum, 1);
-            gfx_SetTextScale(1, 1);
-            gfx_FillRectangle(50, 180, 220, 40);
-            gfx_PrintStringXY(chapterTitles[chapterNum - 1], 160 - ((strlen(chapterTitles[chapterNum - 1]) / 2) * 7), 138);
-            gfx_PrintStringXY("Objective:", 54, 184);
-            gfx_PrintStringXY(objectiveTitles[objectiveNum], 54, 194);
-            while (!os_GetCSC());
-
-        }
+        gfx_SetDrawBuffer();
 
         //Check for all required appvars...
         ti_CloseAll();
@@ -482,67 +465,51 @@ void play(void) {
             ti_Write(gamedata, sizeof(gamedata), 1, appvar);
             ti_SetArchiveStatus(1, appvar);
             ti_CloseAll();
-            for (x = 0; x < 20; x++) {
-                for (y = 0; y < 15; y++) {
-                    gfx_Sprite_NoClip(wood, x * 16, y * 16);
+
+            
+            gfx_SetDrawBuffer();
+            for (xa = 32; xa < 180; xa++) {
+                for (x = 0; x < 20; x++) {
+                    for (y = 0; y < 15; y++) {
+                        gfx_Sprite_NoClip(wood, x * 16, y * 16);
+                    }
                 }
+                gfx_TransparentSprite_NoClip(f, 320-xa, 120);
+                gfx_BlitBuffer();
             }
+
 			delay(300);
-			//This is more compact, but we need to test it.
-			
-		 for(y = 0; y < 9; y++){
+            gfx_SetColor(10);
+			xa = 0;
+            xb = 0;
+		 for(y = 0; y < 5; y++){
 		  	    gfx_FillRectangle(20, 190, 280, 40);
-        		    gfx_PrintStringXY(msgs_1[y], 24, 195);
-        		    gfx_PrintStringXY(msgs_2[y], 24, 210);
+        		gfx_PrintStringXY(msgs_1[y], 24, 195);
+        		gfx_PrintStringXY(msgs_2[y], 24, 210);
+                gfx_BlitBuffer();
+        		    /* Need to change later to wait for the [2nd] key to be pressed */
+           	    while (!os_GetCSC());
+		  }
+          //Make a cool animation...for the next intro scene
+			delay(300);
+          for (x = 0; x < 10; x++) {
+                    for (y = 0; y < 15; y++) {
+                        gfx_Sprite_NoClip(wall_brick, x * 16, y * 16);
+                        gfx_Sprite_NoClip(wall_brick, 304 - (x * 16), 224 - (y * 16));
+                        gfx_BlitBuffer();
+                        delay(10);
+                    }
+                }
+            gfx_ScaledTransparentSprite_NoClip(player_dirF_1, 144, 98, 2, 2);
+		 for(y = 5; y < 9; y++){
+		  	    gfx_FillRectangle(20, 190, 280, 40);
+        		gfx_PrintStringXY(msgs_1[y], 24, 195);
+        		gfx_PrintStringXY(msgs_2[y], 24, 210);
+                gfx_BlitBuffer();
         		    /* Need to change later to wait for the [2nd] key to be pressed */
            	    while (!os_GetCSC());
 		  }
 
-          /*
-            delay(300);
-            gfx_FillRectangle(20, 190, 280, 40);
-            gfx_PrintStringXY("Your father was a senior member of the", 24, 195);
-            gfx_PrintStringXY("highly exclusive and extremely", 24, 210);
-            while (!os_GetCSC());
-
-            gfx_FillRectangle(20, 190, 280, 40);
-            gfx_PrintStringXY("prestigious Hunter's Club.", 24, 195);
-            gfx_PrintStringXY("His collection of rare pelts and trophies", 24, 210);
-            while (!os_GetCSC());
-
-            gfx_FillRectangle(20, 190, 280, 40);
-            gfx_PrintStringXY("was the envy of everyone, especially", 24, 195);
-            gfx_PrintStringXY("your uncle Fred.", 24, 210);
-            while (!os_GetCSC());
-
-            gfx_FillRectangle(20, 190, 280, 40);
-            gfx_PrintStringXY("One day, your father went hunting with", 24, 195);
-            gfx_PrintStringXY("Fred and vanished. Fred said that he", 24, 210);
-            while (!os_GetCSC());
-
-            gfx_FillRectangle(20, 190, 280, 40);
-            gfx_PrintStringXY("was finally killed by one of the beasts", 24, 195);
-            gfx_PrintStringXY("he pursued, and everyone believed", 24, 210);
-            while (!os_GetCSC());
-
-            gfx_FillRectangle(20, 190, 280, 40);
-            gfx_PrintStringXY("him. However, you think your uncle", 24, 195);
-            gfx_PrintStringXY("actually killed your father so that he", 24, 210);
-            while (!os_GetCSC());
-
-            gfx_FillRectangle(20, 190, 280, 40);
-            gfx_PrintStringXY("could hold the title of Greatest Hunter.", 24, 195);
-            gfx_PrintStringXY("To get revenge, you decide to pursue the", 24, 210);
-            while (!os_GetCSC());
-
-            gfx_FillRectangle(20, 190, 280, 40);
-            gfx_PrintStringXY("title yourself...", 24, 195);
-            while (!os_GetCSC());
-
-            gfx_FillRectangle(20, 190, 280, 40);
-            gfx_PrintStringXY("And so the saga begins...", 24, 195);
-            while (!os_GetCSC());
-        */
             health = gamedata[0];
             room = gamedata[1];
             roomX = gamedata[2];
@@ -550,6 +517,11 @@ void play(void) {
             playerX = gamedata[4];
             playerY = gamedata[5];
             dir = gamedata[6];
+            objectiveNum = gamedata[12];
+
+            if (!(objectiveNum % 5)) {
+                dispChaptAndObj();
+            }
             draw_splash();
 
             } else {
@@ -565,6 +537,7 @@ void play(void) {
                 objectiveNum = gamedata[12];
 
                 ti_CloseAll();
+                dispChaptAndObj();
                 draw_splash();
 
             }
@@ -573,6 +546,28 @@ void play(void) {
 
 }
 
+void dispChaptAndObj(void) {
+    for (x = 0; x < 20; x++) {
+        for (y = 0; y < 15; y++) {
+            gfx_Sprite_NoClip(grass, x * 16, y * 16);
+        }
+    }
+    delay(100);
+    gfx_SetColor(255);
+    gfx_FillRectangle(50, 100, 220, 50);
+    gfx_SetTextScale(2, 2);
+    gfx_PrintStringXY("Chapter ", 94, 112);
+    gfx_SetTextXY(214, 112);
+    chapterNum = (objectiveNum % 5) + 1;
+    gfx_PrintInt(chapterNum - 1, 1);
+    gfx_SetTextScale(1, 1);
+    gfx_FillRectangle(50, 180, 220, 40);
+    gfx_PrintStringXY(chapterTitles[chapterNum - 1], 160 - ((strlen(chapterTitles[chapterNum - 1]) / 2) * 7), 138);
+    gfx_PrintStringXY("Objective:", 54, 184);
+    gfx_PrintStringXY(objectiveTitles[objectiveNum], 54, 194);
+    gfx_BlitBuffer();
+    while (!os_GetCSC());
+}
 
 /* Draw text on the homescreen at the given X/Y cursor location */
 void printText(const char *text, uint8_t xpos, uint8_t ypos){
