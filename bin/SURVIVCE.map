@@ -6,11 +6,11 @@ libs     D1A9F9 D1AA8C            93h
 startup  D1AA8C D1AACB            3Fh
 cleanup  D1AACB D1AADF            14h
 exit     D1AADF D1AAE5             6h
-code     D1AAE5 D1C334          184Fh
-data     D1C334 D1E3C9          2095h
-strsect  D1E3C9 D1E6D1           308h
-text     D1E6D1 D1E707            36h
-bss      D031F6 D117E8 D13FD6   E5F2h
+code     D1AAE5 D1C522          1A3Dh
+data     D1C522 D1E5B7          2095h
+strsect  D1E5B7 D1E8BF           308h
+text     D1E8BF D1E8F5            36h
+bss      D031F6 D117EE D13FD6   E5F8h
 header   D1A87F D1A882             3h
 
 Label                                 Value
@@ -174,40 +174,40 @@ _exit                               = D1AAE1
 __exit                              = D1AABA
 __exitsp                            = D1AABA
 __errsp                             = D1AABA
-_dirt_data                          = D1C356
-_door_data                          = D1C458
-_f_data                             = D1C55A
-_fireball_data                      = D1CD5C
-_grass_data                         = D1CE5E
-_heart_data                         = D1CF60
-_inventory_box_data                 = D1CFA2
-_lava_data                          = D1D215
-_mypalette                          = D1D317
-_netherrack_data                    = D1D517
-_player_dirB_1_data                 = D1D619
-_player_dirF_1_data                 = D1D71B
-_player_dirL_1_data                 = D1D81D
-_player_dirR_1_data                 = D1D91F
-_sailcloth_data                     = D1DA21
-_stone_data                         = D1DB23
-_traptile1_data                     = D1DC25
-_traptile2_data                     = D1DD27
-_wall_brick_data                    = D1DE29
-_water_data                         = D1DF2B
-_wood_data                          = D1E02D
-_wood2_data                         = D1E12F
-_input                              = D1C2C2
-_help                               = D1C2C1
-_printText                          = D1C29F
-_dispChaptAndObj                    = D1C0F3
-_play                               = D1BB3B
-_run_intro                          = D1B88F
-_DrawPlayer                         = D1B7AC
-_draw_splash                        = D1AC57
+_dirt_data                          = D1C544
+_door_data                          = D1C646
+_f_data                             = D1C748
+_fireball_data                      = D1CF4A
+_grass_data                         = D1D04C
+_heart_data                         = D1D14E
+_inventory_box_data                 = D1D190
+_lava_data                          = D1D403
+_mypalette                          = D1D505
+_netherrack_data                    = D1D705
+_player_dirB_1_data                 = D1D807
+_player_dirF_1_data                 = D1D909
+_player_dirL_1_data                 = D1DA0B
+_player_dirR_1_data                 = D1DB0D
+_sailcloth_data                     = D1DC0F
+_stone_data                         = D1DD11
+_traptile1_data                     = D1DE13
+_traptile2_data                     = D1DF15
+_wall_brick_data                    = D1E017
+_water_data                         = D1E119
+_wood_data                          = D1E21B
+_wood2_data                         = D1E31D
+_input                              = D1C4B0
+_help                               = D1C4AF
+_printText                          = D1C48D
+_dispChaptAndObj                    = D1C2E1
+_play                               = D1BD29
+_run_intro                          = D1BA7D
+_DrawPlayer                         = D1B99A
+_draw_splash                        = D1ACC2
 _drawRoom                           = D1ABAC
 _main                               = D1AB6B
-_background                         = D1E3C6
-_background_data                    = D1E2C4
+_background                         = D1E5B4
+_background_data                    = D1E4B2
 _ti_CloseAll                        = D1AA0D
 _ti_Open                            = D1AA11
 _ti_Write                           = D1AA15
