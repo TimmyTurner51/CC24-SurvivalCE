@@ -46,16 +46,16 @@
     static uint24_t movable;
     static uint24_t xa;
     static uint24_t xb;
-    static uint24_t xc;
-    static uint24_t yc;
     static uint24_t roomX;
     static uint24_t roomY;
     static uint24_t room;
+    //buildings[0] = count on screen, buildings[1] = building 1 pos in map data, building[2] = building 2 pos in map data, and so on...
+    static uint24_t buildings[21] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
     static uint24_t objectiveNum;
     static uint24_t chapterNum;
     static ti_var_t appvar;
     static char wholeMap[(20 * 14) * (15 * 14)];
-    static gfx_sprite_t* sprites[14] = { dirt, grass, stone, wood, wood2, water, lava, netherrack, fireball, traptile1, traptile2, sailcloth, door, wall_brick };
+    static gfx_sprite_t* sprites[15] = { dirt, grass, stone, wood, wood2, water, lava, netherrack, fireball, traptile1, traptile2, sailcloth, door, wall_brick, roof };
     //gamedata = {player health, current room player is in, roomX, roomY, playerX, playerY, player dir, inventory slot 1, inv. 2, inv. 3, inv 4, inv5, objective #, player pos in map, chicken count, deer count, elephant count, lion count, tiger count, hippo count, gorilla count, monkey count, rhino count, scorpion count, python count, lion king hp, scorpion queen hp, emperor kong hp, Fred’s hp};
     //gamedata size is 29. There are 11 animals (4 bosses).
     static uint24_t gamedata[29] = { 9, 1, 1, 1, 160, 144, 2, 1, 1, 1, 1, 1, 1, 2530, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
@@ -73,26 +73,24 @@
 
 
     void run_intro(void);
-
     void draw_splash(void);
-
     void text_box(void);
-
     void play(void);
     void help(void);
     void quit(void);
+    void drawRoom(void);
     void DrawPlayer(void);
     void dispChaptAndObj(void);
+    void enterBuilding(uint24_t buildingnum);
        
-        gfx_TempSprite(background, 16, 16);
+    gfx_TempSprite(background, 16, 16);
 
 void main(void){
     gfx_Begin();
     //set the palette...
     gfx_SetPalette(mypalette, sizeof_mypalette, 0);
     // Always have to change transparent value any time a new sprite is added and converted :/
-    gfx_SetTransparentColor(99);
-    gfx_SetColor(21);
+    gfx_SetTransparentColor(109);
     gfx_SetTextFGColor(120);
     //Go to the main menu    
     run_intro();
@@ -103,36 +101,271 @@ void main(void){
 }
 
 
+void run_intro(void) {
 
+    gfx_SetDrawBuffer();
+    /* main menu */
+    for (x = 0; x < 20; x++) {
+        for (y = 0; y < 15; y++) {
+            gfx_Sprite(dirt, x * 16, y * 16);
+        }
+    }
+    /* buttons */
+    for (OldY = 140; OldY < 200; OldY += 20) {
+        for (OldX = 60; OldX < 244; OldX += 16) {
+            gfx_Sprite(wood, OldX, OldY);
+        }
+    }
+    gfx_BlitBuffer();
+    redraw = 1;
+    y = 140;
+    i = y;
+    option = 0;
+    while (option == 0) {
+        gfx_SetColor(140);
+        kb_Scan();
+        if (redraw == 1) {
+            redraw = 0;
+            /* redraw only the one button that needs it */
+            for (OldX = 60; OldX < 244; OldX += 16) {
+                gfx_Sprite(wood, OldX, i);
+            }
+            /* button text */
+            gfx_PrintStringXY("Play", 148, 142);
+            gfx_PrintStringXY("Help  & Options", 118, 162);
+            gfx_PrintStringXY("Quit", 148, 182);
+            gfx_Rectangle(60, y, 192, 16);
+            gfx_Rectangle(61, y + 1, 190, 14);
+            gfx_BlitBuffer();
+        }
+        i = y;
+        if (kb_IsDown(kb_KeyUp) && y > 140) {
+            delay(150);
+            y -= 20;
+        }
+        if (kb_IsDown(kb_KeyDown) && y < 180) {
+            delay(150);
+            y += 20;
+        }
+        if (i != y)                                 redraw = 1;
+        if (kb_IsDown(kb_Key2nd))                   option = 1;
+    }
+    if (y == 140) play();
+    if (y == 160) help();
+    return;
+}
+
+void play(void) {
+        
+        char * msgs_1[9]={"Your father was a senior member of the","prestigious Hunter's Club.","was the envy of everyone, especially","One day, your father went hunting with","was finally killed by one of the","...I think my uncle actually","could hold the title of Greatest Hunter.","the title myself...","And so the saga begins..."};
+		char * msgs_2[9]={"highly exclusive and extremely","His collection of rare pelts and trophies","me, your uncle Fred.","me and vanished. I think that he","beasts he pursued...","killed my father so that he","To get revenge, I've decided to pursue"," "," "};
+
+        gfx_SetDrawBuffer();
+
+        //Check for all required appvars...
+        ti_CloseAll();
+        appvar = ti_Open("SrvMap00", "r");
+
+        if (!appvar) {
+           
+            /* error screen goes here, saying the Map file is missing */
+
+            ti_CloseAll();
+        }else{
+            ti_CloseAll();
+            appvar = ti_Open("SrvMap00", "r");
+            ti_Read(wholeMap, ti_GetSize(appvar), 1, appvar);
+
+            ti_CloseAll();
+            /* don't try this, it's too buggy
+            for (i = 0; i < sizeof(wholeMap); i++)
+            
+                if (wholeMap[i] == 12) {
+                    buildings[0] = buildings[0] + 1;
+                    test = buildings[0];
+                    buildings[test] = i;
+                }
+            }
+            */
+            
+            drawRoom();
+        }
+
+
+            ti_CloseAll();
+            appvar = ti_Open("SrvCEss", "r");
+
+
+            if (!appvar) {
+
+            ti_CloseAll();
+            appvar = ti_Open("SrvCEss", "w");
+            ti_Write(gamedata, sizeof(gamedata), 1, appvar);
+            ti_SetArchiveStatus(1, appvar);
+            ti_CloseAll();
+            gfx_SetColor(80);
+            gfx_SetDrawBuffer();
+            for (xa = 32; xa < 180; xa += 2) {
+                for (x = 0; x < 20; x++) {
+                    for (y = 0; y < 15; y++) {
+                        gfx_Sprite_NoClip(wood, x * 16, y * 16);
+                    }
+                }
+                gfx_TransparentSprite_NoClip(f, 320-xa, 120);
+                gfx_BlitBuffer();
+            }
+
+			delay(300);
+			xa = 0;
+            xb = 0;
+		 for(y = 0; y < 5; y++){
+		  	    gfx_FillRectangle(20, 190, 280, 40);
+        		gfx_PrintStringXY(msgs_1[y], 24, 195);
+        		gfx_PrintStringXY(msgs_2[y], 24, 210);
+                gfx_BlitBuffer();
+        		    /* Need to change later to wait for the [2nd] key to be pressed */
+           	    while (!os_GetCSC());
+		  }
+          //Make a cool animation...for the next intro scene
+			delay(300);
+          for (x = 0; x < 10; x++) {
+                    for (y = 0; y < 15; y++) {
+                        gfx_Sprite_NoClip(wall_brick, x * 16, y * 16);
+                        gfx_Sprite_NoClip(wall_brick, 304 - (x * 16), 224 - (y * 16));
+                        gfx_BlitBuffer();
+                        delay(10);
+                    }
+                }
+            gfx_ScaledTransparentSprite_NoClip(player_dirF_1, 144, 98, 2, 2);
+		 for(y = 5; y < 9; y++){
+		  	    gfx_FillRectangle(20, 190, 280, 40);
+        		gfx_PrintStringXY(msgs_1[y], 24, 195);
+        		gfx_PrintStringXY(msgs_2[y], 24, 210);
+                gfx_BlitBuffer();
+        		    /* Need to change later to wait for the [2nd] key to be pressed */
+           	    while (!os_GetCSC());
+		  }
+          
+            gfx_SetColor(0);
+                for (y = 0; y < 15; y++) {
+                    for (x = 0; x < 10; x++) {
+                        gfx_FillRectangle(x * 16, y * 16, 16, 16);
+                        gfx_FillRectangle(304 - (x * 16), 224 - (y * 16), 16, 16);
+                        gfx_BlitBuffer();
+                        delay(10);
+                    }
+                }
+
+            gfx_SetPalette(mypalette, sizeof_mypalette, 0);
+            health = gamedata[0];
+            room = gamedata[1];
+            roomX = gamedata[2];
+            roomY = gamedata[3];
+            playerX = gamedata[4];
+            playerY = gamedata[5];
+            dir = gamedata[6];
+            objectiveNum = gamedata[12];
+
+            if (!(objectiveNum % 5)) {
+                dispChaptAndObj();
+            }
+            draw_splash();
+
+            } else {
+
+                ti_Read(gamedata, ti_GetSize(appvar), 1, appvar);
+                health = gamedata[0];
+                room = gamedata[1];
+                roomX = gamedata[2];
+                roomY = gamedata[3];
+                playerX = gamedata[4];
+                playerY = gamedata[5];
+                dir = gamedata[6];
+                objectiveNum = gamedata[12];
+
+                ti_CloseAll();
+                dispChaptAndObj();
+                draw_splash();
+
+            }
+
+
+
+}
+
+void dispChaptAndObj(void) {
+    for (x = 0; x < 20; x++) {
+        for (y = 0; y < 15; y++) {
+            gfx_Sprite_NoClip(grass, x * 16, y * 16);
+        }
+    }
+    delay(100);
+    gfx_SetColor(100);
+    gfx_FillRectangle(50, 100, 220, 50);
+    gfx_SetTextScale(2, 2);
+    gfx_PrintStringXY("Chapter ", 94, 112);
+    gfx_SetTextXY(214, 112);
+    chapterNum = (objectiveNum % 5) + 1;
+    gfx_PrintInt(chapterNum - 1, 1);
+    gfx_SetTextScale(1, 1);
+    gfx_FillRectangle(50, 180, 220, 40);
+    gfx_PrintStringXY(chapterTitles[chapterNum - 1], 160 - ((strlen(chapterTitles[chapterNum - 1]) / 2) * 7), 138);
+    gfx_PrintStringXY("Objective:", 54, 184);
+    gfx_PrintStringXY(objectiveTitles[objectiveNum], 54, 194);
+    gfx_BlitBuffer();
+    while (!os_GetCSC());
+}
 
 void drawRoom(void) {
+    int test;
+    redraw = 0;
+    i = room - 1;
+    for (y = 0; y < 15; y++) {
+        for (x = 0; x < 20; x++) {
+            gfx_Sprite(sprites[wholeMap[i]], x * 16, y * 16);
+            /* don't try this, it's too buggy...
+            if (wholeMap[i] == 12) {
+                buildings[0] = buildings[0] + 1;
+                test = buildings[0];
+                buildings[test] = i;
+            }
+            */
+            
+            i++;
+        }
+        i += 20 * 13;
+    }
+}
+
+void enterBuilding(uint24_t buildingNum) {
 
     redraw = 0;
     i = room - 1;
     for (y = 0; y < 15; y++) {
         for (x = 0; x < 20; x++) {
-                gfx_Sprite(sprites[wholeMap[i]], x * 16, y * 16);
-        i++;
+            gfx_Sprite(sprites[wholeMap[i]], x * 16, y * 16);
+            
+            i++;
         }
         i += 20 * 13;
     }
+        
 
 }
 
-
 void draw_splash(void) {
-
     OldX = playerX;
     OldY = playerY;
 
     gfx_SetDrawBuffer();
+    gfx_SetColor(0);
     drawRoom();
 
     gfx_GetSprite(background, playerX, playerY);
     DrawPlayer();
 
     gfx_BlitBuffer();
-
+    
     while (!kb_IsDown(kb_KeyClear)) {
         kb_Scan();
 
@@ -166,9 +399,27 @@ void draw_splash(void) {
         if (movable > 0) {
             if (kb_IsDown(kb_KeyUp) && (playerY > 0) && (wholeMap[gamedata[13] - 280] != 7) && (wholeMap[gamedata[13] - 280] != 13)) {
                 dir = DIR_UP;
-                if ((playerY % 16 == 0) && (playerY != 0) && (playerY == OldY)) gamedata[13] -= 280;
-                playerY--;
                 DrawPlayer();
+                    if (wholeMap[gamedata[13] - 280] == 12) {
+                        /* don't try this, it's too buggy.
+                        for (xa = 1; xa < 20; xa++) {
+                            if (buildings[xa] == gamedata[13])
+                            xb = xa;
+                        }
+                        enterBuilding(xb);
+                        */
+                        gfx_FillRectangle(20, 190, 280, 40);
+                        gfx_PrintStringXY("Hmm, I can't go in here...", 22, 192);
+                        gfx_BlitBuffer();
+                        delay(1000);
+                        drawRoom();
+                        DrawPlayer();
+                        gfx_BlitBuffer();
+                    }else{
+                        if ((playerY % 16 == 0) && (playerY != 0) && (playerY == OldY)) gamedata[13] -= 280;
+                        playerY--;
+                    }
+
             }
             if (kb_IsDown(kb_KeyDown) && (wholeMap[gamedata[13] + 280] != 7) && (wholeMap[gamedata[13] + 280] != 13)) {
                 dir = DIR_DOWN;
@@ -182,7 +433,7 @@ void draw_splash(void) {
                 playerX--;
                 DrawPlayer();
             }
-            if (kb_IsDown(kb_KeyRight) && (wholeMap[gamedata[13] + 1] != 7) && (wholeMap[gamedata[13] + 1] != 13)) {
+            if (kb_IsDown(kb_KeyRight) && (wholeMap[gamedata[13]] != 7) && (wholeMap[gamedata[13]] != 13)) {
                 dir = DIR_RIGHT;
                 if ((playerX % 16 == 0) && (playerX == OldX)) gamedata[13]++;
                 playerX++;
@@ -203,6 +454,7 @@ void draw_splash(void) {
                 }
                 room--;
                 //xa--;
+                gamedata[13] = gamedata[13] - 1;
                 drawRoom();
                 DrawPlayer();
                 gfx_BlitBuffer();
@@ -221,6 +473,7 @@ void draw_splash(void) {
                 }
                 room++;
                 //xa++;
+                gamedata[13] = gamedata[13] + 1;
                 drawRoom();
                 DrawPlayer();
                 gfx_BlitBuffer();
@@ -270,7 +523,7 @@ void draw_splash(void) {
 
         if kb_IsDown(kb_KeyStat) {
    
-                gfx_SetColor(21);
+                gfx_SetColor(40);
                 for (xa = 1; xa < 30; xa++) {
                     drawRoom();
                     DrawPlayer();
@@ -371,214 +624,6 @@ void DrawPlayer(void) {
     OldX = playerX;
     OldY = playerY;
 
-}
-
-void run_intro(void) {
-
-    gfx_SetDrawBuffer();
-    /* main menu */
-    for (x = 0; x < 20; x++) {
-        for (y = 0; y < 15; y++) {
-            gfx_Sprite(dirt, x * 16, y * 16);
-        }
-    }
-    /* buttons */
-    for (OldY = 140; OldY < 200; OldY += 20) {
-        for (OldX = 60; OldX < 244; OldX += 16) {
-            gfx_Sprite(wood, OldX, OldY);
-        }
-    }
-    gfx_BlitBuffer();
-    gfx_SetTextFGColor(110);
-    redraw = 1;
-    y = 140;
-    i = y;
-    option = 0;
-    while (option == 0) {
-        gfx_SetColor(175);
-        kb_Scan();
-        if (redraw == 1) {
-            redraw = 0;
-            /* redraw only the one button that needs it */
-            for (OldX = 60; OldX < 244; OldX += 16) {
-                gfx_Sprite(wood, OldX, i);
-            }
-            /* button text */
-            gfx_PrintStringXY("Play", 148, 142);
-            gfx_PrintStringXY("Help  & Options", 118, 162);
-            gfx_PrintStringXY("Quit", 148, 182);
-            gfx_Rectangle(60, y, 192, 16);
-            gfx_Rectangle(61, y + 1, 190, 14);
-            gfx_BlitBuffer();
-        }
-        i = y;
-        if (kb_IsDown(kb_KeyUp) && y > 140) {
-            delay(150);
-            y -= 20;
-        }
-        if (kb_IsDown(kb_KeyDown) && y < 180) {
-            delay(150);
-            y += 20;
-        }
-        if (i != y)                                 redraw = 1;
-        if (kb_IsDown(kb_Key2nd))                   option = 1;
-    }
-    if (y == 140) play();
-    if (y == 160) help();
-    return;
-}
-
-void play(void) {
-        
-        char * msgs_1[9]={"Your father was a senior member of the","prestigious Hunter's Club.","was the envy of everyone, especially","One day, your father went hunting with","was finally killed by one of the","...I think my uncle actually","could hold the title of Greatest Hunter.","the title myself...","And so the saga begins..."};
-		char * msgs_2[9]={"highly exclusive and extremely","His collection of rare pelts and trophies","me, your uncle Fred.","me and vanished. I think that he","beasts he pursued...","killed my father so that he","To get revenge, I've decided to pursue"," "," "};
-
-        gfx_SetDrawBuffer();
-
-        //Check for all required appvars...
-        ti_CloseAll();
-        appvar = ti_Open("SrvMap00", "r");
-
-        if (!appvar) {
-           
-            /* error screen goes here, saying the Map file is missing */
-
-            ti_CloseAll();
-        }else{
-            ti_CloseAll();
-            appvar = ti_Open("SrvMap00", "r");
-            ti_Read(wholeMap, ti_GetSize(appvar), 1, appvar);
-
-            ti_CloseAll();
-            drawRoom();
-        }
-
-
-            ti_CloseAll();
-            appvar = ti_Open("SrvCEss", "r");
-
-
-            if (!appvar) {
-
-            ti_CloseAll();
-            appvar = ti_Open("SrvCEss", "w");
-            ti_Write(gamedata, sizeof(gamedata), 1, appvar);
-            ti_SetArchiveStatus(1, appvar);
-            ti_CloseAll();
-
-            
-            gfx_SetDrawBuffer();
-            for (xa = 32; xa < 180; xa += 2) {
-                for (x = 0; x < 20; x++) {
-                    for (y = 0; y < 15; y++) {
-                        gfx_Sprite_NoClip(wood, x * 16, y * 16);
-                    }
-                }
-                gfx_TransparentSprite_NoClip(f, 320-xa, 120);
-                gfx_BlitBuffer();
-            }
-
-			delay(300);
-            gfx_SetColor(10);
-			xa = 0;
-            xb = 0;
-		 for(y = 0; y < 5; y++){
-		  	    gfx_FillRectangle(20, 190, 280, 40);
-        		gfx_PrintStringXY(msgs_1[y], 24, 195);
-        		gfx_PrintStringXY(msgs_2[y], 24, 210);
-                gfx_BlitBuffer();
-        		    /* Need to change later to wait for the [2nd] key to be pressed */
-           	    while (!os_GetCSC());
-		  }
-          //Make a cool animation...for the next intro scene
-			delay(300);
-          for (x = 0; x < 10; x++) {
-                    for (y = 0; y < 15; y++) {
-                        gfx_Sprite_NoClip(wall_brick, x * 16, y * 16);
-                        gfx_Sprite_NoClip(wall_brick, 304 - (x * 16), 224 - (y * 16));
-                        gfx_BlitBuffer();
-                        delay(10);
-                    }
-                }
-            gfx_ScaledTransparentSprite_NoClip(player_dirF_1, 144, 98, 2, 2);
-		 for(y = 5; y < 9; y++){
-		  	    gfx_FillRectangle(20, 190, 280, 40);
-        		gfx_PrintStringXY(msgs_1[y], 24, 195);
-        		gfx_PrintStringXY(msgs_2[y], 24, 210);
-                gfx_BlitBuffer();
-        		    /* Need to change later to wait for the [2nd] key to be pressed */
-           	    while (!os_GetCSC());
-		  }
-          
-            gfx_SetDefaultPalette(0);
-            gfx_SetColor(0);
-                for (y = 0; y < 15; y++) {
-                    for (x = 0; x < 10; x++) {
-                        gfx_FillRectangle(x * 16, y * 16, 16, 16);
-                        gfx_FillRectangle(304 - (x * 16), 224 - (y * 16), 16, 16);
-                        gfx_BlitBuffer();
-                        delay(10);
-                    }
-                }
-
-            gfx_SetPalette(mypalette, sizeof_mypalette, 0);
-            health = gamedata[0];
-            room = gamedata[1];
-            roomX = gamedata[2];
-            roomY = gamedata[3];
-            playerX = gamedata[4];
-            playerY = gamedata[5];
-            dir = gamedata[6];
-            objectiveNum = gamedata[12];
-
-            if (!(objectiveNum % 5)) {
-                dispChaptAndObj();
-            }
-            draw_splash();
-
-            } else {
-
-                ti_Read(gamedata, ti_GetSize(appvar), 1, appvar);
-                health = gamedata[0];
-                room = gamedata[1];
-                roomX = gamedata[2];
-                roomY = gamedata[3];
-                playerX = gamedata[4];
-                playerY = gamedata[5];
-                dir = gamedata[6];
-                objectiveNum = gamedata[12];
-
-                ti_CloseAll();
-                dispChaptAndObj();
-                draw_splash();
-
-            }
-
-
-
-}
-
-void dispChaptAndObj(void) {
-    for (x = 0; x < 20; x++) {
-        for (y = 0; y < 15; y++) {
-            gfx_Sprite_NoClip(grass, x * 16, y * 16);
-        }
-    }
-    delay(100);
-    gfx_SetColor(255);
-    gfx_FillRectangle(50, 100, 220, 50);
-    gfx_SetTextScale(2, 2);
-    gfx_PrintStringXY("Chapter ", 94, 112);
-    gfx_SetTextXY(214, 112);
-    chapterNum = (objectiveNum % 5) + 1;
-    gfx_PrintInt(chapterNum - 1, 1);
-    gfx_SetTextScale(1, 1);
-    gfx_FillRectangle(50, 180, 220, 40);
-    gfx_PrintStringXY(chapterTitles[chapterNum - 1], 160 - ((strlen(chapterTitles[chapterNum - 1]) / 2) * 7), 138);
-    gfx_PrintStringXY("Objective:", 54, 184);
-    gfx_PrintStringXY(objectiveTitles[objectiveNum], 54, 194);
-    gfx_BlitBuffer();
-    while (!os_GetCSC());
 }
 
 /* Draw text on the homescreen at the given X/Y cursor location */
