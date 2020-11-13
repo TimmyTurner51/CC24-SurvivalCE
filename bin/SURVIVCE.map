@@ -6,11 +6,11 @@ libs     D1A9F9 D1AA8C            93h
 startup  D1AA8C D1AACB            3Fh
 cleanup  D1AACB D1AADF            14h
 exit     D1AADF D1AAE5             6h
-code     D1AAE5 D1C522          1A3Dh
-data     D1C522 D1E5B7          2095h
-strsect  D1E5B7 D1E8BF           308h
-text     D1E8BF D1E8F5            36h
-bss      D031F6 D117EE D13FD6   E5F8h
+code     D1AAE5 D1CA74          1F8Fh
+data     D1CA74 D1EF6E          24FAh
+strsect  D1EF6E D1F4C8           55Ah
+text     D1F4C8 D1F4FE            36h
+bss      D031F6 D117E2 D13FD6   E5ECh
 header   D1A87F D1A882             3h
 
 Label                                 Value
@@ -174,40 +174,43 @@ _exit                               = D1AAE1
 __exit                              = D1AABA
 __exitsp                            = D1AABA
 __errsp                             = D1AABA
-_dirt_data                          = D1C544
-_door_data                          = D1C646
-_f_data                             = D1C748
-_fireball_data                      = D1CF4A
-_grass_data                         = D1D04C
-_heart_data                         = D1D14E
-_inventory_box_data                 = D1D190
-_lava_data                          = D1D403
-_mypalette                          = D1D505
-_netherrack_data                    = D1D705
-_player_dirB_1_data                 = D1D807
-_player_dirF_1_data                 = D1D909
-_player_dirL_1_data                 = D1DA0B
-_player_dirR_1_data                 = D1DB0D
-_sailcloth_data                     = D1DC0F
-_stone_data                         = D1DD11
-_traptile1_data                     = D1DE13
-_traptile2_data                     = D1DF15
-_wall_brick_data                    = D1E017
-_water_data                         = D1E119
-_wood_data                          = D1E21B
-_wood2_data                         = D1E31D
-_input                              = D1C4B0
-_help                               = D1C4AF
-_printText                          = D1C48D
-_dispChaptAndObj                    = D1C2E1
-_play                               = D1BD29
-_run_intro                          = D1BA7D
-_DrawPlayer                         = D1B99A
-_draw_splash                        = D1ACC2
-_drawRoom                           = D1ABAC
+_dirt_data                          = D1CA96
+_door_data                          = D1CB98
+_f_data                             = D1CC9A
+_fireball_data                      = D1D49C
+_grass_data                         = D1D59E
+_heart_data                         = D1D6A0
+_inventory_box_data                 = D1D6E2
+_lava_data                          = D1D955
+_netherrack_data                    = D1DA57
+_player_dirB_1_data                 = D1DB59
+_player_dirF_1_data                 = D1DC5B
+_player_dirL_1_data                 = D1DD5D
+_player_dirR_1_data                 = D1DE5F
+_roof_data                          = D1DF61
+_sailcloth_data                     = D1E063
+_stone_data                         = D1E165
+_sword_data                         = D1E267
+_traptile1_data                     = D1E369
+_traptile2_data                     = D1E46B
+_wall_brick_data                    = D1E56D
+_water_data                         = D1E66F
+_wood_data                          = D1E771
+_wood2_data                         = D1E873
+_xlibc                              = D1E975
+_input                              = D1CA02
+_help                               = D1C524
+_printText                          = D1C502
+_DrawPlayer                         = D1C41F
+_draw_splash                        = D1B827
+_enterBuilding                      = D1B774
+_drawRoom                           = D1B6C9
+_dispChaptAndObj                    = D1B51D
+_play                               = D1AEA4
+_run_intro                          = D1AB98
 _main                               = D1AB6B
-_background                         = D1E5B4
-_background_data                    = D1E4B2
+_background                         = D1EF6B
+_background_data                    = D1EE69
 _ti_CloseAll                        = D1AA0D
 _ti_Open                            = D1AA11
 _ti_Write                           = D1AA15
@@ -217,8 +220,8 @@ _ti_GetSize                         = D1AA21
 _gfx_Begin                          = D1AA2E
 _gfx_End                            = D1AA32
 _gfx_SetColor                       = D1AA36
-_gfx_SetDefaultPalette              = D1AA3A
-_gfx_SetPalette                     = D1AA3E
+_gfx_SetPalette                     = D1AA3A
+_gfx_FillScreen                     = D1AA3E
 _gfx_SetDraw                        = D1AA42
 _gfx_Blit                           = D1AA46
 _gfx_PrintInt                       = D1AA4A
