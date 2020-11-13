@@ -55,10 +55,13 @@
     static uint24_t chapterNum;
     static ti_var_t appvar;
     static char wholeMap[(20 * 14) * (15 * 14)];
-    static gfx_sprite_t* sprites[15] = { dirt, grass, stone, wood, wood2, water, lava, netherrack, fireball, traptile1, traptile2, sailcloth, door, wall_brick, roof };
+    static gfx_sprite_t* sprites[16] = { dirt, grass, stone, wood, wood2, water, lava, netherrack, fireball, traptile1, traptile2, sailcloth, door, wall_brick, roof, sword };
     //gamedata = {player health, current room player is in, roomX, roomY, playerX, playerY, player dir, inventory slot 1, inv. 2, inv. 3, inv 4, inv5, objective #, player pos in map, chicken count, deer count, elephant count, lion count, tiger count, hippo count, gorilla count, monkey count, rhino count, scorpion count, python count, lion king hp, scorpion queen hp, emperor kong hp, Fred’s hp};
     //gamedata size is 29. There are 11 animals (4 bosses).
     static uint24_t gamedata[29] = { 9, 1, 1, 1, 160, 144, 2, 1, 1, 1, 1, 1, 1, 2530, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
+    //each non-player mob has a max limit of 60 positions in the list
+    //20 is max count allowed for mobs, with hp, posX, posY, and dir (left or right). Left dir is 0, right dir is 1.
+    static uint24_t animals[180] = { 0 };
     static char* objectiveTitles[3] = { "Go to the Weapons Center", "Purchase a knife","Go stab a duck" };
     static char* chapterTitles[3] = { "Hunt Training", "The adventure","Return of Fred" };
 
@@ -88,10 +91,9 @@
 void main(void){
     gfx_Begin();
     //set the palette...
-    gfx_SetPalette(mypalette, sizeof_mypalette, 0);
+    gfx_SetPalette(xlibc, sizeof_xlibc, 0);
     // Always have to change transparent value any time a new sprite is added and converted :/
-    gfx_SetTransparentColor(109);
-    gfx_SetTextFGColor(120);
+    gfx_SetTransparentColor(148);
     //Go to the main menu    
     run_intro();
     //Display Splash screen.
@@ -107,7 +109,7 @@ void run_intro(void) {
     /* main menu */
     for (x = 0; x < 20; x++) {
         for (y = 0; y < 15; y++) {
-            gfx_Sprite(dirt, x * 16, y * 16);
+            gfx_Sprite(grass, x * 16, y * 16);
         }
     }
     /* buttons */
@@ -116,7 +118,14 @@ void run_intro(void) {
             gfx_Sprite(wood, OldX, OldY);
         }
     }
+    gfx_SetTextFGColor(254);
+    gfx_SetTextScale(2, 2);
+    gfx_PrintStringXY("SurvivalCE", 20, 20);
+    gfx_SetTextScale(1, 1);
+    gfx_PrintStringXY("For Cemetech Contest #24", 2, 230);
+    gfx_PrintStringXY("v1.3.0", 280, 230);
     gfx_BlitBuffer();
+    gfx_SetTextFGColor(80);
     redraw = 1;
     y = 140;
     i = y;
@@ -132,7 +141,7 @@ void run_intro(void) {
             }
             /* button text */
             gfx_PrintStringXY("Play", 148, 142);
-            gfx_PrintStringXY("Help  & Options", 118, 162);
+            gfx_PrintStringXY("Help  & Options", 112, 162);
             gfx_PrintStringXY("Quit", 148, 182);
             gfx_Rectangle(60, y, 192, 16);
             gfx_Rectangle(61, y + 1, 190, 14);
@@ -168,9 +177,23 @@ void play(void) {
 
         if (!appvar) {
            
-            /* error screen goes here, saying the Map file is missing */
-
+            gfx_SetTextFGColor(254);
+            gfx_FillScreen(200);
+            gfx_SetTextScale(2, 2);
+            gfx_PrintStringXY("ERROR!", 10, 10);
+            gfx_PrintStringXY("The Map File has been renamed or is", 10, 30);
+            gfx_PrintStringXY("missing!", 10, 45);
+            gfx_SetTextScale(1, 1);
+            gfx_PrintStringXY("The map file is required to play this game!", 10, 100);
+            gfx_PrintStringXY("To get the map file, visit www.cemetech.net,", 10, 110);
+            gfx_PrintStringXY("or get the SrvMap00.8xp file here:", 10, 120);
+            gfx_PrintStringXY("https://github.com/TimmyTurner51/CC24-SurvivalCE/tree/main/bin", 10, 130);
+            gfx_SetTextFGColor(80);
             ti_CloseAll();
+            gfx_BlitBuffer();
+            while (!os_GetCSC());
+            return;
+
         }else{
             ti_CloseAll();
             appvar = ti_Open("SrvMap00", "r");
@@ -242,7 +265,6 @@ void play(void) {
         		gfx_PrintStringXY(msgs_1[y], 24, 195);
         		gfx_PrintStringXY(msgs_2[y], 24, 210);
                 gfx_BlitBuffer();
-        		    /* Need to change later to wait for the [2nd] key to be pressed */
            	    while (!os_GetCSC());
 		  }
           
@@ -256,7 +278,6 @@ void play(void) {
                     }
                 }
 
-            gfx_SetPalette(mypalette, sizeof_mypalette, 0);
             health = gamedata[0];
             room = gamedata[1];
             roomX = gamedata[2];
@@ -634,13 +655,97 @@ void printText(const char *text, uint8_t xpos, uint8_t ypos){
 
 
 void help(void) {
-    /* need a help/options screen. I'm thinking similar to main menu... ? */
-
-    return;
-
+    
+    /* help and options menu */
+    delay(200);
+    gfx_SetDrawBuffer();
+    gfx_SetTextFGColor(80);
+    for (x = 0; x < 20; x++) {
+        for (y = 0; y < 15; y++) {
+            gfx_Sprite(grass, x * 16, y * 16);
+        }
+    }
+    /* buttons */
+    for (OldY = 140; OldY < 200; OldY += 20) {
+        for (OldX = 60; OldX < 244; OldX += 16) {
+            gfx_Sprite(wood, OldX, OldY);
+        }
+    }
+    gfx_SetTextScale(2, 2);
+    gfx_PrintStringXY("Help & Options:", 30, 20);
+    gfx_SetTextScale(1, 1);
+    gfx_BlitBuffer();
+    redraw = 1;
+    y = 140;
+    i = y;
+    option = 0;
+    while (option == 0) {
+        gfx_SetColor(140);
+        kb_Scan();
+        if (redraw == 1) {
+            redraw = 0;
+            /* redraw only the one button that needs it */
+            for (OldX = 60; OldX < 244; OldX += 16) {
+                gfx_Sprite(wood, OldX, i);
+            }
+            /* button text */
+            gfx_PrintStringXY("Controls", 138, 142);
+            gfx_PrintStringXY("Support", 138, 162);
+            gfx_PrintStringXY("Back", 148, 182);
+            gfx_Rectangle(60, y, 192, 16);
+            gfx_Rectangle(61, y + 1, 190, 14);
+            gfx_BlitBuffer();
+        }
+        i = y;
+        if (kb_IsDown(kb_KeyUp) && y > 140) {
+            delay(150);
+            y -= 20;
+        }
+        if (kb_IsDown(kb_KeyDown) && y < 180) {
+            delay(150);
+            y += 20;
+        }
+        if (i != y)                                 redraw = 1;
+        if (kb_IsDown(kb_Key2nd))                   option = 1;
+    }
+    if (y == 140) {
+        for (x = 0; x < 20; x++) {
+            for (y = 0; y < 15; y++) {
+                gfx_Sprite(dirt, x * 16, y * 16);
+            }
+        }
+        gfx_PrintStringXY("Controls:", 10, 10);
+        gfx_PrintStringXY("Arrow Keys = Move around", 10, 30);
+        gfx_PrintStringXY("[2nd] = A", 10, 40);
+        gfx_PrintStringXY("[alpha] = B", 10, 50);
+        gfx_PrintStringXY("[mode] = Start", 10, 60);
+        gfx_PrintStringXY("[X,T,0,n] = Select", 10, 70);
+        gfx_PrintStringXY("Press any Key...", 10, 100);
+        gfx_BlitBuffer();
+        while (!os_GetCSC());
+        delay(200);
+        help();
+    }
+    if (y == 160) {
+        for (x = 0; x < 20; x++) {
+            for (y = 0; y < 15; y++) {
+                gfx_Sprite(stone, x * 16, y * 16);
+            }
+        }
+        gfx_PrintStringXY("Contact Support:", 10, 10);
+        gfx_PrintStringXY("If you have any questions or suggestions,", 10, 30);
+        gfx_PrintStringXY("please go to https://github.com/TimmyTurner51/CC24-SurvivalCE.", 10, 40);
+        gfx_PrintStringXY("Press any Key...", 10, 100);
+        gfx_BlitBuffer();
+        while (!os_GetCSC());
+        delay(200);
+        help();
+    }
+    delay(200);
+    main();
 }
 
-
+/* for future use, sometime after CC24... */
 void input(void) {
     const char* chars = "\0\0\0\0\0\0\0\0\0\0\"WRMH\0\0?[VQLG\0\0:ZUPKFC\0 YTOJEB\0\0XSNIDA\0\0\0\0\0\0\0\0";
     uint24_t key, i = 0;
