@@ -62,8 +62,8 @@
     //each non-player mob has a max limit of 60 positions in the list
     //20 is max count allowed for mobs, with hp, posX, posY, and dir (left or right). Left dir is 0, right dir is 1.
     static uint24_t animals[180] = { 0 };
-    static char* objectiveTitles[3] = { "Go to the Weapons Center", "Purchase a knife","Go stab a duck" };
-    static char* chapterTitles[3] = { "Hunt Training", "The adventure","Return of Fred" };
+    static char* objectiveTitles[3] = { "Find and take the Sword", "Kill your first animal", "Ugh, Fred's back. Find him." };
+    static char* chapterTitles[3] = { "Hunt Training", "The Adventure","Return of Fred" };
 
     //CREDITS: (required for CC24, it's the right thing to do)
     //Map Engine by TimmyTurner62 at cemetech.net. Thanks to Michael0x18 for constant help with code.
@@ -92,7 +92,6 @@ void main(void){
     gfx_Begin();
     //set the palette...
     gfx_SetPalette(xlibc, sizeof_xlibc, 0);
-    // Always have to change transparent value any time a new sprite is added and converted :/
     gfx_SetTransparentColor(148);
     //Go to the main menu    
     run_intro();
@@ -166,10 +165,12 @@ void run_intro(void) {
 
 void play(void) {
         
+        int test;
         char * msgs_1[9]={"Your father was a senior member of the","prestigious Hunter's Club.","was the envy of everyone, especially","One day, your father went hunting with","was finally killed by one of the","...I think my uncle actually","could hold the title of Greatest Hunter.","the title myself...","And so the saga begins..."};
 		char * msgs_2[9]={"highly exclusive and extremely","His collection of rare pelts and trophies","me, your uncle Fred.","me and vanished. I think that he","beasts he pursued...","killed my father so that he","To get revenge, I've decided to pursue"," "," "};
 
         gfx_SetDrawBuffer();
+        gfx_SetTextFGColor(254);
 
         //Check for all required appvars...
         ti_CloseAll();
@@ -177,7 +178,6 @@ void play(void) {
 
         if (!appvar) {
            
-            gfx_SetTextFGColor(254);
             gfx_FillScreen(200);
             gfx_SetTextScale(2, 2);
             gfx_PrintStringXY("ERROR!", 10, 10);
@@ -188,7 +188,6 @@ void play(void) {
             gfx_PrintStringXY("To get the map file, visit www.cemetech.net,", 10, 110);
             gfx_PrintStringXY("or get the SrvMap00.8xp file here:", 10, 120);
             gfx_PrintStringXY("https://github.com/TimmyTurner51/CC24-SurvivalCE/tree/main/bin", 10, 130);
-            gfx_SetTextFGColor(80);
             ti_CloseAll();
             gfx_BlitBuffer();
             while (!os_GetCSC());
@@ -218,7 +217,6 @@ void play(void) {
             ti_CloseAll();
             appvar = ti_Open("SrvCEss", "r");
 
-
             if (!appvar) {
 
             ti_CloseAll();
@@ -226,7 +224,7 @@ void play(void) {
             ti_Write(gamedata, sizeof(gamedata), 1, appvar);
             ti_SetArchiveStatus(1, appvar);
             ti_CloseAll();
-            gfx_SetColor(80);
+            gfx_SetColor(0);
             gfx_SetDrawBuffer();
             for (xa = 32; xa < 180; xa += 2) {
                 for (x = 0; x < 20; x++) {
@@ -332,7 +330,7 @@ void dispChaptAndObj(void) {
     gfx_FillRectangle(50, 180, 220, 40);
     gfx_PrintStringXY(chapterTitles[chapterNum - 1], 160 - ((strlen(chapterTitles[chapterNum - 1]) / 2) * 7), 138);
     gfx_PrintStringXY("Objective:", 54, 184);
-    gfx_PrintStringXY(objectiveTitles[objectiveNum], 54, 194);
+    gfx_PrintStringXY(objectiveTitles[objectiveNum - 1], 54, 194);
     gfx_BlitBuffer();
     while (!os_GetCSC());
 }
@@ -375,6 +373,8 @@ void enterBuilding(uint24_t buildingNum) {
 }
 
 void draw_splash(void) {
+    int test, i;
+
     OldX = playerX;
     OldY = playerY;
 
@@ -390,15 +390,31 @@ void draw_splash(void) {
     while (!kb_IsDown(kb_KeyClear)) {
         kb_Scan();
 
-
-            gfx_FillRectangle(18, 18, 100, 14);
+        if ((roomX > 1) && (roomY > 1)) {
+            gfx_FillRectangle(18, 18, 284, 14);
             gfx_SetTextXY(20, 20);
-            gfx_PrintInt(gamedata[13],1);
+            gfx_PrintStringXY("End of Demo, but still, play on!", 30, 20);
+        }
+                    //&& (objectiveNum == 0)
+            if ((wholeMap[gamedata[13]] == 16)) {
+                
+                test = 0;
+                for (i = 8; i < 13; i++) {
+                    wholeMap[gamedata[13]] = 3;
+                    if ((gamedata[i] != 1) && (test != 0)) {
+                        gamedata[i] = 1;
+                        test = 1;
+                    }
+                }
+            objectiveNum++;
+            dispChaptAndObj();
+            drawRoom();
+            }
 
 
         movable = 1;
         
-        
+        /*
         if (kb_IsDown(kb_KeyUp) && (dir != DIR_UP)) {
             movable = 0;
             dir = DIR_UP;
@@ -415,6 +431,7 @@ void draw_splash(void) {
             movable = 0;
             dir = DIR_RIGHT;
         }
+        */
         
         
         if (movable > 0) {
@@ -563,11 +580,14 @@ void draw_splash(void) {
                 gfx_PrintStringXY(objectiveTitles[objectiveNum], 82, 4);
                 
                 //inventory hotbar
-                gfx_Sprite_NoClip(inventory_box, 117 - 25, 213);
+                gfx_Sprite_NoClip(inventory_box, 92, 213);
                 gfx_Sprite_NoClip(inventory_box, 117, 213);
                 gfx_Sprite_NoClip(inventory_box, 117 + 25, 213);
                 gfx_Sprite_NoClip(inventory_box, 117 + 50, 213);
                 gfx_Sprite_NoClip(inventory_box, 117 + 75, 213);
+                    for (i = 8; i < 13; i++) {
+                        if (gamedata[i] == 1) gfx_Sprite(sword, 92 + (25 * (9 - i)), 214);
+                    }
                 for (x = 0; x < health; x++) {
                     gfx_ScaledTransparentSprite_NoClip(heart, 200 + (x * 13), 194, 2, 2);
                 }
@@ -614,7 +634,7 @@ void draw_splash(void) {
 
              gfx_BlitBuffer();
 
-        }
+    }
 
         gamedata[0] = health;
         gamedata[1] = room;
@@ -659,7 +679,7 @@ void help(void) {
     /* help and options menu */
     delay(200);
     gfx_SetDrawBuffer();
-    gfx_SetTextFGColor(80);
+    gfx_SetTextFGColor(254);
     for (x = 0; x < 20; x++) {
         for (y = 0; y < 15; y++) {
             gfx_Sprite(grass, x * 16, y * 16);
@@ -675,6 +695,7 @@ void help(void) {
     gfx_PrintStringXY("Help & Options:", 30, 20);
     gfx_SetTextScale(1, 1);
     gfx_BlitBuffer();
+    gfx_SetTextFGColor(0);
     redraw = 1;
     y = 140;
     i = y;
